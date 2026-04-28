@@ -466,7 +466,7 @@
         const meta = await fetch(metaUrl).then(r=>r.json());
         if (meta.error) throw new Error(meta.error.message);
         const sheet = meta.sheets?.find(s=>s.properties.sheetId===Number(SHEET_GID));
-        const sn = sheet?.properties?.title||'Sheet1';
+        const sn = sheet?.properties?.title || meta.sheets?.[0]?.properties?.title || 'Sheet1';
         const dataUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sn)}!A2:H1000?key=${API_KEY}`;
         const data = await fetch(dataUrl).then(r=>r.json());
         if (data.error) throw new Error(data.error.message);
