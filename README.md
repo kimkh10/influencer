@@ -48,7 +48,14 @@ npx serve .
 python3 -m http.server 8080
 ```
 
-**Vercel 배포:**
+**Cloudflare Pages 배포 (권장 — 상업용 무료):**
+```bash
+npm i -g wrangler
+wrangler login
+wrangler pages deploy . --project-name=influencer
+```
+
+**Vercel 배포 (비상업용):**
 ```bash
 npm i -g vercel
 vercel login
