@@ -23,25 +23,31 @@
     }
     /* ── Control Panel ── */
     .control-panel {
-      width: 1080px;
-      background: rgba(255,255,255,0.85);
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      overflow-y: auto;
+      background: rgba(255,255,255,0.92);
       backdrop-filter: blur(12px);
-      border-radius: 16px;
-      padding: 18px 20px;
-      margin-bottom: 14px;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      border-right: 1px solid #e0dbd9;
+      padding: 24px 22px;
+      box-shadow: 2px 0 20px rgba(0,0,0,0.06);
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      overflow: visible;
+      gap: 12px;
+      z-index: 50;
     }
     .panel-row {
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
-    .panel-row input[type="text"] {
-      flex: 1;
+    .panel-row input[type="text"],
+    .panel-row input[type="month"] {
+      flex: 1 1 100%;
       padding: 9px 14px;
       border: 1.5px solid #e0dbd9;
       border-radius: 10px;
@@ -52,10 +58,11 @@
       transition: border-color 0.2s;
       background: rgba(255,255,255,0.6);
     }
-    .panel-row input[type="text"]:focus { border-color: var(--accent-hex); }
+    .panel-row input[type="text"]:focus,
+    .panel-row input[type="month"]:focus { border-color: var(--accent-hex); }
     .panel-row input[type="text"]::placeholder { color: #c5bfbc; }
     .panel-divider {
-      width: 1px; height: 24px; background: #e0dbd9; flex-shrink: 0;
+      width: 100%; height: 1px; background: #e0dbd9; flex-shrink: 0;
     }
     .panel-btn {
       padding: 8px 20px;
@@ -387,10 +394,14 @@
   <button class="admin-btn" id="admin-btn" onclick="toggleAdmin()" title="관리자">&#128274;</button>
   <div class="control-panel hidden" id="control-panel">
     <div class="panel-row">
-      <input id="api-key" type="text" placeholder="Google Sheets API 키" style="flex:0.4" />
+      <input id="api-key" type="text" placeholder="Google Sheets API 키" />
       <input id="sheet-url" type="text" placeholder="Google 스프레드시트 URL" />
       <button class="panel-btn apply" onclick="applySettings()">적용</button>
       <span id="sheet-status" class="panel-status"></span>
+    </div>
+    <div class="panel-row">
+      <span class="panel-label">년월 선택</span>
+      <input type="month" id="month-picker" onchange="changeMonth(this.value)" />
     </div>
     <div class="panel-row">
       <button id="refresh-btn" class="panel-btn refresh" onclick="loadAndRender()">새로고침</button>
@@ -400,8 +411,8 @@
       <input type="color" id="color-picker" class="panel-color" value="#D4776D" oninput="applyColor(this.value)" />
       <div class="panel-divider"></div>
       <span class="panel-hint">텍스트를 클릭하면 수정할 수 있습니다</span>
-      <div style="flex:1"></div>
-      <button class="panel-btn" style="background:#e0dbd9;color:#999;font-size:11px;padding:6px 14px;" onclick="adminLogout()">로그아웃</button>
+      <div class="panel-divider"></div>
+      <button class="panel-btn" style="background:#e0dbd9;color:#999;font-size:11px;padding:6px 14px;width:100%;" onclick="adminLogout()">로그아웃</button>
     </div>
   </div>
   <div id="calendar" class="calendar"></div>
@@ -410,6 +421,9 @@
     let API_KEY = localStorage.getItem('api_key') || '';
     let SPREADSHEET_ID = localStorage.getItem('sheet_id') || '';
     let SHEET_GID = localStorage.getItem('sheet_gid') || '';
+    let SELECTED_YEAR = null;
+    let SELECTED_MONTH = null;
+    let LOADED_PRODUCTS = [];
     const HANDLE = '@공구캘린더';
     const TITLE = '공동구매 일정';
 
@@ -545,15 +559,65 @@
         if (data.error) throw new Error(data.error.message);
         const rows = data.values||[], products = [];
         rows.forEach((row, i) => {
+          const sd = new Date(row[3]||'');
           products.push({ id:row[0]+'_'+i, title:row[1]||'', startDate:row[3]||'', endDate:row[4]||'',
-            salesLink:row[5]||'', thumbnail:row[7]||'', startDay:parseStartDay(row[3]) });
+            salesLink:row[5]||'', thumbnail:row[7]||'', startDay:sd.getDate(),
+            startYear:sd.getFullYear(), startMonth:sd.getMonth() });
         });
-        const sd = new Date(products[0]?.startDate||new Date());
-        renderCalendar(sd.getFullYear(), sd.getMonth(), products);
+        LOADED_PRODUCTS = products;
+        renderForCurrentMonth();
       } catch(e) {
         document.getElementById('calendar').innerHTML =
           `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#D4776D;font-size:20px;padding:60px;text-align:center;line-height:1.6">${esc(e.message)}</div>`;
       }
+    }
+
+    function renderForCurrentMonth() {
+      let year, month;
+      if (SELECTED_YEAR !== null) {
+        year = SELECTED_YEAR;
+        month = SELECTED_MONTH;
+      } else if (LOADED_PRODUCTS[0]) {
+        const sd = new Date(LOADED_PRODUCTS[0].startDate);
+        year = sd.getFullYear();
+        month = sd.getMonth();
+        const picker = document.getElementById('month-picker');
+        if (picker && !picker.value) picker.value = `${year}-${String(month+1).padStart(2,'0')}`;
+      } else {
+        const now = new Date();
+        year = now.getFullYear();
+        month = now.getMonth();
+      }
+      const filtered = LOADED_PRODUCTS.filter(p => p.startYear === year && p.startMonth === month);
+      renderCalendar(year, month, filtered);
+      attachEditableHandlers();
+    }
+
+    function changeMonth(value) {
+      if (!value) {
+        SELECTED_YEAR = null;
+        SELECTED_MONTH = null;
+        localStorage.removeItem('selected_month');
+      } else {
+        const [y, m] = value.split('-').map(Number);
+        SELECTED_YEAR = y;
+        SELECTED_MONTH = m - 1;
+        localStorage.setItem('selected_month', value);
+      }
+      if (LOADED_PRODUCTS.length > 0) renderForCurrentMonth();
+      else if (API_KEY && SPREADSHEET_ID) loadAndRender();
+    }
+
+    function attachEditableHandlers() {
+      document.querySelectorAll('.product-desc').forEach(el=>{
+        if(el.textContent.trim()==='설명 입력') el.classList.add('placeholder');
+        el.addEventListener('focus',()=>{if(el.classList.contains('placeholder')){el.textContent='';el.classList.remove('placeholder');}});
+        el.addEventListener('blur',()=>{if(!el.textContent.trim()){el.textContent='설명 입력';el.classList.add('placeholder');}});
+      });
+      document.querySelectorAll('.date-badge.empty-badge').forEach(el=>{
+        el.addEventListener('focus',()=>{if(el.textContent.trim()==='+'){el.textContent='';} el.classList.remove('empty-badge');});
+        el.addEventListener('blur',()=>{if(!el.textContent.trim()){el.textContent='+';el.classList.add('empty-badge');}});
+      });
     }
 
     function renderCalendar(year, month, products) {
@@ -782,8 +846,15 @@
 
     const savedKey = localStorage.getItem('api_key');
     const savedUrl = localStorage.getItem('sheet_url');
+    const savedMonth = localStorage.getItem('selected_month');
     if (savedKey) document.getElementById('api-key').value = savedKey;
     if (savedUrl) document.getElementById('sheet-url').value = savedUrl;
+    if (savedMonth) {
+      document.getElementById('month-picker').value = savedMonth;
+      const [y, m] = savedMonth.split('-').map(Number);
+      SELECTED_YEAR = y;
+      SELECTED_MONTH = m - 1;
+    }
 
     function showGuide() {
       document.getElementById('calendar').innerHTML =
