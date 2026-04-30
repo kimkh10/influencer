@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 그룹 스터디 지원</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #FFF5EE;
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px 60px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #fff;
+      border: 1.5px solid #FF8C42;
+      color: #FF8C42;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 18px;
+      border-radius: 30px;
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: #222;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .page-desc {
+      font-size: 14px;
+      color: #888;
+      text-align: center;
+      line-height: 1.8;
+      margin-bottom: 28px;
+    }
+
+    .info-card {
+      width: 100%;
+      max-width: 560px;
+      background: linear-gradient(135deg, #FF8C42, #FF6B2B);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(255,140,66,0.25);
+    }
+    .info-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .info-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .info-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .info-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .info-tag {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .section-card {
+      width: 100%;
+      max-width: 560px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px 28px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+    }
+
+    .section-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: #FF6B2B;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title .num {
+      background: #FF8C42;
+      color: #fff;
+      font-size: 12px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .section-desc {
+      font-size: 12px;
+      color: #b0a8a3;
+      margin-bottom: 22px;
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+    .form-group:last-child { margin-bottom: 0; }
+
+    .form-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 8px;
+      display: block;
+      line-height: 1.5;
+    }
+    .form-label .required {
+      color: #FF6B2B;
+      margin-left: 2px;
+    }
+    .form-label .hint {
+      font-size: 11px;
+      color: #b0a8a3;
+      font-weight: 400;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid #e8e4e0;
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: 'Noto Sans KR', sans-serif;
+      color: #333;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #FAFAFA;
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: #FF8C42;
+      background: #fff;
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: #c5c0bc; }
+
+    .form-select {
+      appearance: none;
+      background: #FAFAFA url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 16px center;
+      cursor: pointer;
+    }
+
+    .form-textarea {
+      min-height: 90px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+    }
+    .form-row .form-group { flex: 1; }
+
+    .radio-group,
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .radio-item,
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border: 1.5px solid #e8e4e0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 13px;
+      color: #666;
+      background: #FAFAFA;
+      user-select: none;
+    }
+    .radio-item:hover,
+    .checkbox-item:hover { border-color: #FF8C42; }
+    .radio-item input,
+    .checkbox-item input { display: none; }
+    .radio-item.checked,
+    .checkbox-item.checked {
+      background: #FFF0E6;
+      border-color: #FF8C42;
+      color: #FF6B2B;
+      font-weight: 700;
+    }
+
+    .scale-group {
+      display: flex;
+      gap: 0;
+      width: 100%;
+    }
+    .scale-item {
+      flex: 1;
+      text-align: center;
+      padding: 10px 4px;
+      border: 1.5px solid #e8e4e0;
+      cursor: pointer;
+      font-size: 12px;
+      color: #666;
+      background: #FAFAFA;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .scale-item:first-child { border-radius: 10px 0 0 10px; }
+    .scale-item:last-child { border-radius: 0 10px 10px 0; }
+    .scale-item:not(:first-child) { border-left: none; }
+    .scale-item:hover { background: #FFF0E6; }
+    .scale-item.checked {
+      background: #FF8C42;
+      border-color: #FF8C42;
+      color: #fff;
+      font-weight: 700;
+    }
+    .scale-item input { display: none; }
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 10px;
+      color: #b0a8a3;
+    }
+
+    .other-input {
+      margin-top: 8px;
+      display: none;
+    }
+    .other-input.show { display: block; }
+
+    .btn-group {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .btn {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Jua', 'Noto Sans KR', sans-serif;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-reset {
+      background: #f0eeec;
+      color: #999;
+      flex: 0.4;
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, #FF8C42, #FF6B2B);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(255,107,43,0.3);
+    }
+
+    .success-card {
+      display: none;
+      width: 100%;
+      max-width: 560px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 50px 28px;
+      text-align: center;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+    }
+    .success-card .icon { font-size: 52px; margin-bottom: 20px; }
+    .success-card h3 { font-family: 'Jua', sans-serif; font-size: 24px; color: #333; margin-bottom: 10px; }
+    .success-card p { font-size: 14px; color: #888; line-height: 1.8; }
+
+    .progress-bar {
+      width: 100%;
+      max-width: 560px;
+      height: 4px;
+      background: #e8e4e0;
+      border-radius: 4px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #FF8C42, #FF6B2B);
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+
+    @media (max-width: 600px) {
+      .form-row { flex-direction: column; gap: 0; }
+      .scale-item { padding: 10px 2px; font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+
+  <span class="badge">friendly-pharmacist</span>
+  <h1 class="page-title">AI 그룹 스터디 지원서</h1>
+  <p class="page-desc">
+    약사님을 위한 AI 활용 그룹 스터디!<br>
+    아래 설문을 작성하시면 지원이 완료됩니다.
+  </p>
+
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+  <div class="info-card">
+    <span class="info-badge">모집 중</span>
+    <div class="info-title">약사를 위한 AI 실무 활용 그룹 스터디</div>
+    <div class="info-desc">생성형 AI를 약국 실무에 바로 적용할 수 있도록, 소규모 그룹으로 함께 배우고 실습하는 스터디입니다.</div>
+    <div class="info-tags">
+      <span class="info-tag">기간 8주</span>
+      <span class="info-tag">주 1회 온라인</span>
+      <span class="info-tag">정원 10명</span>
+      <span class="info-tag">호스트: 친한약사</span>
+    </div>
+  </div>
+
+  <form id="study-form" onsubmit="return submitForm(event)">
+
+    <!-- 섹션 1: 기본 정보 -->
+    <div class="section-card" data-section="1">
+      <div class="section-title"><span class="num">1</span> 기본 정보</div>
+      <div class="section-desc">지원자 기본 정보를 입력해주세요.</div>
+
+      <div class="form-group">
+        <label class="form-label">이름 <span class="required">*</span></label>
+        <input type="text" class="form-input" name="name" placeholder="홍길동" required />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">전화번호 <span class="required">*</span></label>
+          <input type="tel" class="form-input" name="phone" placeholder="010-1234-5678" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">이메일</label>
+          <input type="email" class="form-input" name="email" placeholder="example@email.com" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">인스타그램 아이디 <span class="required">*</span></label>
+        <input type="text" class="form-input" name="instagram" placeholder="@ instagram_id" required />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">근무 유형 <span class="required">*</span></label>
+          <select class="form-select" name="pharmacy_type" required>
+            <option value="">선택</option>
+            <option value="개국약사">개국약사</option>
+            <option value="근무약사">근무약사</option>
+            <option value="병원약사">병원약사</option>
+            <option value="제약회사">제약회사</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">경력</label>
+          <select class="form-select" name="experience">
+            <option value="">선택</option>
+            <option value="1년 미만">1년 미만</option>
+            <option value="1~3년">1~3년</option>
+            <option value="3~5년">3~5년</option>
+            <option value="5~10년">5~10년</option>
+            <option value="10년 이상">10년 이상</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 섹션 2: AI 사용 경험 -->
+    <div class="section-card" data-section="2">
+      <div class="section-title"><span class="num">2</span> AI 사용 경험</div>
+      <div class="section-desc">현재 AI 활용 수준을 파악하기 위한 질문입니다.</div>
+
+      <div class="form-group">
+        <label class="form-label">생성형 AI(ChatGPT, Claude, Gemini 등) 사용 경험은 어느 정도이신가요? <span class="required">*</span></label>
+        <div class="radio-group" data-name="ai_experience">
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_experience" value="들어본 적은 있으나 사용해 본 적 없음" required>들어본 적은 있으나 사용해 본 적 없음</label>
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_experience" value="1~2회 호기심에 사용해 봄">1~2회 호기심에 사용해 봄</label>
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_experience" value="가끔(월 1~2회) 업무에 활용">가끔(월 1~2회) 업무에 활용</label>
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_experience" value="자주(주 1회 이상) 업무에 활용">자주(주 1회 이상) 업무에 활용</label>
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_experience" value="매일 업무에 활용 중">매일 업무에 활용 중</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">현재 사용 중이거나 사용해 본 AI 도구를 모두 선택해 주세요. <span class="required">*</span>
+          <span class="hint">(복수 선택 가능)</span>
+        </label>
+        <div class="checkbox-group">
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="ai_tools" value="ChatGPT">ChatGPT</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="ai_tools" value="Claude">Claude</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="ai_tools" value="Gemini">Gemini</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="ai_tools" value="Copilot(MS/GitHub)">Copilot(MS/GitHub)</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="ai_tools" value="Perplexity">Perplexity</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="ai_tools" value="이미지 생성(Midjourney/DALL·E)">이미지 생성(Midjourney/DALL·E)</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="ai_tools" value="Notion AI">Notion AI</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="ai_tools" value="사용 경험 없음">사용 경험 없음</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="ai_tools" value="기타">기타</label>
+        </div>
+        <input type="text" class="form-input other-input" id="ai_tools_other" name="ai_tools_other" placeholder="기타 도구명을 입력해주세요" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">본인의 생성형 AI 활용 수준을 스스로 평가한다면? <span class="required">*</span></label>
+        <div class="scale-group">
+          <label class="scale-item" onclick="selectScale(this)"><input type="radio" name="ai_level" value="1" required>1점</label>
+          <label class="scale-item" onclick="selectScale(this)"><input type="radio" name="ai_level" value="2">2점</label>
+          <label class="scale-item" onclick="selectScale(this)"><input type="radio" name="ai_level" value="3">3점</label>
+          <label class="scale-item" onclick="selectScale(this)"><input type="radio" name="ai_level" value="4">4점</label>
+          <label class="scale-item" onclick="selectScale(this)"><input type="radio" name="ai_level" value="5">5점</label>
+        </div>
+        <div class="scale-labels">
+          <span>전혀 모름</span>
+          <span>기본 개념은 안다</span>
+          <span>프롬프트 엔지니어링 가능</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 섹션 3: 업무 현황 -->
+    <div class="section-card" data-section="3">
+      <div class="section-title"><span class="num">3</span> 업무 현황</div>
+      <div class="section-desc">현재 업무에서 AI가 필요한 영역을 파악합니다.</div>
+
+      <div class="form-group">
+        <label class="form-label">현재 본인 업무 중 '반복적이고 시간이 많이 소요된다'고 느끼는 업무는 무엇인가요? <span class="required">*</span>
+          <span class="hint">(복수 선택 가능)</span>
+        </label>
+        <div class="checkbox-group">
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="보고서·기획서 작성">보고서·기획서 작성</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="데이터 정리·분석(엑셀)">데이터 정리·분석(엑셀)</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="이메일·메신저 응대">이메일·메신저 응대</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="인플루언서·협력사 관리">인플루언서·협력사 관리</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="자료 검색·리서치">자료 검색·리서치</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="번역·문서 요약">번역·문서 요약</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="회의록 작성">회의록 작성</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="콘텐츠·카피 작성">콘텐츠·카피 작성</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="디자인 시안·이미지 작업">디자인 시안·이미지 작업</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="고객 응대(CS)">고객 응대(CS)</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="복약지도 자료 준비">복약지도 자료 준비</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="약물 상호작용 검색">약물 상호작용 검색</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="SNS·마케팅 콘텐츠 제작">SNS·마케팅 콘텐츠 제작</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="repetitive_tasks" value="기타">기타</label>
+        </div>
+        <input type="text" class="form-input other-input" id="tasks_other" name="tasks_other" placeholder="기타 업무를 입력해주세요" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">생성형 AI를 도입한다면 어떤 업무에 가장 먼저 활용하고 싶으신가요? <span class="required">*</span></label>
+        <textarea class="form-textarea" name="first_ai_use" placeholder="예: 복약지도 안내문 작성, 블로그 콘텐츠 초안, 매출 데이터 분석 등" required></textarea>
+      </div>
+    </div>
+
+    <!-- 섹션 4: AI 도입 관심사 -->
+    <div class="section-card" data-section="4">
+      <div class="section-title"><span class="num">4</span> AI 도입 관심사</div>
+      <div class="section-desc">교육 내용 구성을 위한 질문입니다.</div>
+
+      <div class="form-group">
+        <label class="form-label">생성형 AI 도입·활용에 있어 가장 우려되는 점은 무엇인가요? <span class="required">*</span>
+          <span class="hint">(최대 2개 선택)</span>
+        </label>
+        <div class="checkbox-group" data-max="2">
+          <label class="checkbox-item" onclick="toggleCheckMax(this,2)"><input type="checkbox" name="concerns" value="정보 보안·기밀 유출">정보 보안·기밀 유출</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,2)"><input type="checkbox" name="concerns" value="부정확한 정보(환각)">부정확한 정보(환각)</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,2)"><input type="checkbox" name="concerns" value="저작권·법적 이슈">저작권·법적 이슈</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,2)"><input type="checkbox" name="concerns" value="일자리 대체 우려">일자리 대체 우려</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,2)"><input type="checkbox" name="concerns" value="학습 진입장벽">학습 진입장벽</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,2)"><input type="checkbox" name="concerns" value="사용료·비용 부담">사용료·비용 부담</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,2)"><input type="checkbox" name="concerns" value="환자 정보 보호(HIPAA 등)">환자 정보 보호</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,2)"><input type="checkbox" name="concerns" value="특별히 없음">특별히 없음</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">AX 교육에서 가장 듣고 싶은 주제는 무엇인가요? <span class="required">*</span>
+          <span class="hint">(최대 3개 선택)</span>
+        </label>
+        <div class="checkbox-group" data-max="3">
+          <label class="checkbox-item" onclick="toggleCheckMax(this,3)"><input type="checkbox" name="topics" value="생성형 AI 시장 트렌드와 산업 전망">AI 시장 트렌드와 전망</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,3)"><input type="checkbox" name="topics" value="AI 기본 원리·개념">AI 기본 원리·개념</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,3)"><input type="checkbox" name="topics" value="Claude vs ChatGPT 등 도구별 차이">도구별 차이 비교</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,3)"><input type="checkbox" name="topics" value="효과적인 프롬프트 작성법">프롬프트 작성법</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,3)"><input type="checkbox" name="topics" value="약국 실무 활용 사례">약국 실무 활용 사례</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,3)"><input type="checkbox" name="topics" value="AX(AI 전환)를 통한 생산성 개선">AX 생산성 개선 사례</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,3)"><input type="checkbox" name="topics" value="보안·윤리 가이드라인">보안·윤리 가이드라인</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,3)"><input type="checkbox" name="topics" value="AI로 SNS·마케팅 자동화">SNS·마케팅 자동화</label>
+          <label class="checkbox-item" onclick="toggleCheckMax(this,3)"><input type="checkbox" name="topics" value="AI 기반 약물정보 검색·활용">약물정보 검색·활용</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">향후 본인 업무에 AI를 적용해 볼 의향이 있으신가요? <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_intent" value="적극적으로 적용하고 싶다" required>적극적으로 적용하고 싶다</label>
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_intent" value="조건이 맞으면 적용해 보고 싶다">조건이 맞으면 적용해 보고 싶다</label>
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_intent" value="잘 모르겠다 / 추가 학습이 필요하다">잘 모르겠다 / 추가 학습이 필요하다</label>
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_intent" value="별로 필요성을 느끼지 못한다">별로 필요성을 느끼지 못한다</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 섹션 5: 스터디 참여 -->
+    <div class="section-card" data-section="5">
+      <div class="section-title"><span class="num">5</span> 스터디 참여</div>
+      <div class="section-desc">스터디 운영에 참고할 정보입니다.</div>
+
+      <div class="form-group">
+        <label class="form-label">희망 요일 <span class="required">*</span>
+          <span class="hint">(복수 선택 가능)</span>
+        </label>
+        <div class="checkbox-group">
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="day" value="월">월</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="day" value="화">화</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="day" value="수">수</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="day" value="목">목</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="day" value="금">금</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="day" value="토">토</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="day" value="일">일</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">희망 시간대 <span class="required">*</span></label>
+        <div class="radio-group">
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="time" value="오전 (9~12시)" required>오전 (9~12시)</label>
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="time" value="오후 (12~18시)">오후 (12~18시)</label>
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="time" value="저녁 (18~21시)">저녁 (18~21시)</label>
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="time" value="밤 (21시 이후)">밤 (21시 이후)</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">스터디를 통해 기대하는 바는 무엇인가요? <span class="required">*</span></label>
+        <textarea class="form-textarea" name="expectation" placeholder="예: 실무에 바로 쓸 수 있는 프롬프트를 배우고 싶습니다." required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">강사님께 미리 질문하고 싶은 내용이나, 교육에 바라는 점이 있다면 자유롭게 적어 주세요.</label>
+        <textarea class="form-textarea" name="message" placeholder="자유롭게 적어주세요."></textarea>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button type="button" class="btn btn-reset" onclick="resetForm()">지우기</button>
+      <button type="submit" class="btn btn-submit">제출하기</button>
+    </div>
+  </form>
+
+  <div class="success-card" id="success-card">
+    <div class="icon">&#127891;</div>
+    <h3>지원 완료!</h3>
+    <p>설문 참여 감사합니다.<br>스터디 확정 시 인스타그램 DM으로 안내드릴게요.<br><br>함께 성장하는 AI 스터디가 되겠습니다!</p>
+  </div>
+
+  <script>
+    function toggleCheck(el) {
+      const cb = el.querySelector('input');
+      cb.checked = !cb.checked;
+      el.classList.toggle('checked', cb.checked);
+      showOtherInput(el);
+      updateProgress();
+    }
+
+    function toggleCheckMax(el, max) {
+      const cb = el.querySelector('input');
+      const group = el.closest('.checkbox-group');
+      const checked = group.querySelectorAll('input:checked');
+      if (!cb.checked && checked.length >= max) {
+        alert('최대 ' + max + '개까지 선택 가능합니다.');
+        return;
+      }
+      cb.checked = !cb.checked;
+      el.classList.toggle('checked', cb.checked);
+      updateProgress();
+    }
+
+    function selectRadio(el) {
+      const radio = el.querySelector('input');
+      const group = el.closest('.radio-group');
+      group.querySelectorAll('.radio-item').forEach(item => item.classList.remove('checked'));
+      radio.checked = true;
+      el.classList.add('checked');
+      updateProgress();
+    }
+
+    function selectScale(el) {
+      const radio = el.querySelector('input');
+      const group = el.closest('.scale-group');
+      group.querySelectorAll('.scale-item').forEach(item => item.classList.remove('checked'));
+      radio.checked = true;
+      el.classList.add('checked');
+      updateProgress();
+    }
+
+    function showOtherInput(el) {
+      const cb = el.querySelector('input');
+      if (cb.value === '기타') {
+        const otherInput = el.closest('.form-group').querySelector('.other-input');
+        if (otherInput) otherInput.classList.toggle('show', cb.checked);
+      }
+    }
+
+    function updateProgress() {
+      const total = document.querySelectorAll('.section-card').length;
+      let filled = 0;
+      document.querySelectorAll('.section-card').forEach(card => {
+        const required = card.querySelectorAll('[required]');
+        let ok = true;
+        required.forEach(el => {
+          if (el.type === 'radio') {
+            const name = el.name;
+            if (!card.querySelector(`input[name="${name}"]:checked`)) ok = false;
+          } else if (!el.value.trim()) ok = false;
+        });
+        if (ok) filled++;
+      });
+      const pct = Math.round((filled / total) * 100);
+      document.getElementById('progress').style.width = pct + '%';
+    }
+
+    function resetForm() {
+      document.getElementById('study-form').reset();
+      document.querySelectorAll('.checkbox-item, .radio-item, .scale-item').forEach(el => el.classList.remove('checked'));
+      document.querySelectorAll('.other-input').forEach(el => el.classList.remove('show'));
+      updateProgress();
+    }
+
+    function submitForm(e) {
+      e.preventDefault();
+      const form = e.target;
+
+      const aiTools = form.querySelectorAll('input[name="ai_tools"]:checked');
+      if (aiTools.length === 0) { alert('사용해 본 AI 도구를 선택해주세요.'); return false; }
+
+      const tasks = form.querySelectorAll('input[name="repetitive_tasks"]:checked');
+      if (tasks.length === 0) { alert('반복 업무를 1개 이상 선택해주세요.'); return false; }
+
+      const concerns = form.querySelectorAll('input[name="concerns"]:checked');
+      if (concerns.length === 0) { alert('우려 사항을 선택해주세요.'); return false; }
+
+      const topics = form.querySelectorAll('input[name="topics"]:checked');
+      if (topics.length === 0) { alert('듣고 싶은 주제를 선택해주세요.'); return false; }
+
+      const days = form.querySelectorAll('input[name="day"]:checked');
+      if (days.length === 0) { alert('희망 요일을 선택해주세요.'); return false; }
+
+      const data = new FormData(form);
+      const obj = {};
+      data.forEach((v, k) => {
+        if (obj[k]) {
+          if (!Array.isArray(obj[k])) obj[k] = [obj[k]];
+          obj[k].push(v);
+        } else obj[k] = v;
+      });
+      obj.submittedAt = new Date().toISOString();
+
+      const submissions = JSON.parse(localStorage.getItem('study_submissions') || '[]');
+      submissions.push(obj);
+      localStorage.setItem('study_submissions', JSON.stringify(submissions));
+
+      form.style.display = 'none';
+      document.querySelectorAll('.section-card').forEach(c => c.style.display = 'none');
+      document.querySelector('.btn-group').style.display = 'none';
+      document.querySelector('.progress-bar').style.display = 'none';
+      document.getElementById('success-card').style.display = 'block';
+      document.getElementById('progress').style.width = '100%';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return false;
+    }
+
+    updateProgress();
+  </script>
+</body>
+</html>

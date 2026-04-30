@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>공구 캘린더</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Jua&family=Gamja+Flower&family=Bagel+Fat+One&family=Gaegu:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <style>
     :root {
@@ -19,7 +19,7 @@
       flex-direction: column;
       align-items: center;
       padding: 24px;
-      font-family: 'Noto Sans KR', sans-serif;
+      font-family: 'Jua', 'Noto Sans KR', sans-serif;
     }
     /* ── Control Panel ── */
     .control-panel {
@@ -191,15 +191,15 @@
     .calendar-bg {
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 340px;
-      background: linear-gradient(175deg, rgba(var(--accent),0.35) 0%, rgba(var(--accent),0.18) 25%, rgba(var(--accent),0.06) 55%, #FFFBF9 100%);
+      height: 260px;
+      background: linear-gradient(180deg, rgba(var(--accent),0.30) 0%, rgba(var(--accent),0.10) 50%, #FFFBF9 100%);
     }
 
     /* ── Header ── */
     .header {
       position: relative; z-index: 1;
-      padding: 32px 60px 0;
-      height: 260px;
+      padding: 20px 60px 0;
+      height: 250px;
     }
     .month-num {
       font-family: 'Cormorant Garamond', serif;
@@ -410,6 +410,15 @@
       <span class="panel-label">테마</span>
       <input type="color" id="color-picker" class="panel-color" value="#D4776D" oninput="applyColor(this.value)" />
       <div class="panel-divider"></div>
+      <span class="panel-label">폰트</span>
+      <select id="font-picker" onchange="applyFont(this.value)" style="flex:1;padding:8px 10px;border:1.5px solid #e0dbd9;border-radius:10px;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#666;outline:none;background:rgba(255,255,255,0.6);cursor:pointer;">
+        <option value="Jua" style="font-family:'Jua'">주아 (기본)</option>
+        <option value="Noto Sans KR" style="font-family:'Noto Sans KR'">Noto Sans KR (깔끔)</option>
+        <option value="Gamja Flower" style="font-family:'Gamja Flower'">감자꽃 (손글씨)</option>
+        <option value="Bagel Fat One" style="font-family:'Bagel Fat One'">베이글팻원 (통통)</option>
+        <option value="Gaegu" style="font-family:'Gaegu'">개구 (캐주얼)</option>
+      </select>
+      <div class="panel-divider"></div>
       <span class="panel-hint">텍스트를 클릭하면 수정할 수 있습니다</span>
       <div class="panel-divider"></div>
       <button class="panel-btn" style="background:#e0dbd9;color:#999;font-size:11px;padding:6px 14px;width:100%;" onclick="adminLogout()">로그아웃</button>
@@ -491,6 +500,17 @@
         applyColor(saved);
         document.getElementById('color-picker').value = saved;
       }
+    })();
+
+    function applyFont(fontName) {
+      document.getElementById('calendar').style.fontFamily = `'${fontName}', sans-serif`;
+      localStorage.setItem('theme_font', fontName);
+    }
+
+    (function initFont() {
+      const saved = localStorage.getItem('theme_font') || 'Jua';
+      applyFont(saved);
+      document.getElementById('font-picker').value = saved;
     })();
 
     function getShortName(title) {
@@ -608,7 +628,34 @@
       else if (API_KEY && SPREADSHEET_ID) loadAndRender();
     }
 
+    function getEditStore() {
+      try { return JSON.parse(localStorage.getItem('edit_store') || '{}'); } catch(e) { return {}; }
+    }
+    function saveEdit(key, value) {
+      const store = getEditStore();
+      store[key] = value;
+      localStorage.setItem('edit_store', JSON.stringify(store));
+    }
+    function restoreEdits() {
+      const store = getEditStore();
+      document.querySelectorAll('[data-edit-key]').forEach(el => {
+        const key = el.dataset.editKey;
+        if (store[key] !== undefined && store[key] !== '') {
+          el.innerHTML = store[key];
+          if (el.classList.contains('empty-badge') && store[key] !== '+') {
+            el.classList.remove('empty-badge');
+          }
+          if (el.classList.contains('placeholder')) el.classList.remove('placeholder');
+        }
+      });
+    }
+
     function attachEditableHandlers() {
+      document.querySelectorAll('[data-edit-key]').forEach(el => {
+        el.addEventListener('blur', () => {
+          saveEdit(el.dataset.editKey, el.innerHTML);
+        });
+      });
       document.querySelectorAll('.product-desc').forEach(el=>{
         if(el.textContent.trim()==='설명 입력') el.classList.add('placeholder');
         el.addEventListener('focus',()=>{if(el.classList.contains('placeholder')){el.textContent='';el.classList.remove('placeholder');}});
@@ -618,6 +665,7 @@
         el.addEventListener('focus',()=>{if(el.textContent.trim()==='+'){el.textContent='';} el.classList.remove('empty-badge');});
         el.addEventListener('blur',()=>{if(!el.textContent.trim()){el.textContent='+';el.classList.add('empty-badge');}});
       });
+      restoreEdits();
     }
 
     function renderCalendar(year, month, products) {
@@ -633,11 +681,11 @@
       let h = '<div class="calendar-bg"></div>';
 
       h += `<div class="header">
-        <div class="month-num" contenteditable="true" spellcheck="false">${mn}</div>
+        <div class="month-num" contenteditable="true" spellcheck="false" data-edit-key="month-num">${mn}</div>
         <div class="header-right">
-          <div class="month-name" contenteditable="true" spellcheck="false">${MONTH_NAMES[month]}</div>
-          <div class="calendar-title" contenteditable="true" spellcheck="false">${esc(TITLE)}</div>
-          <div class="handle" contenteditable="true" spellcheck="false">${esc(HANDLE)}</div>
+          <div class="month-name" contenteditable="true" spellcheck="false" data-edit-key="month-name">${MONTH_NAMES[month]}</div>
+          <div class="calendar-title" contenteditable="true" spellcheck="false" data-edit-key="cal-title">${esc(TITLE)}</div>
+          <div class="handle" contenteditable="true" spellcheck="false" data-edit-key="handle">${esc(HANDLE)}</div>
         </div>
       </div>`;
 
@@ -658,9 +706,9 @@
           h += `<span style="position:relative;z-index:1">${day||''}</span>`;
           if (isS) {
             if (badge) {
-              h += `<span class="date-badge" contenteditable="true" spellcheck="false">${esc(badge)}</span>`;
+              h += `<span class="date-badge" contenteditable="true" spellcheck="false" data-edit-key="badge-${day}">${esc(badge)}</span>`;
             } else {
-              h += `<span class="date-badge empty-badge" contenteditable="true" spellcheck="false">+</span>`;
+              h += `<span class="date-badge empty-badge" contenteditable="true" spellcheck="false" data-edit-key="badge-${day}">+</span>`;
             }
           }
           h += '</div>';
@@ -684,8 +732,8 @@
               h += `<div class="product-card">
                 <img src="${esc(p.thumbnail)}" alt="${esc(sn)}" data-link="${esc(p.salesLink)}" onclick="if(this.dataset.link&&!window.getSelection().toString())window.open(this.dataset.link,'_blank')" style="cursor:pointer"/>
                 <div class="product-info">
-                  <div class="product-name" contenteditable="true" spellcheck="false">${esc(sn)}</div>
-                  <div class="product-desc" contenteditable="true" spellcheck="false">${dh||'설명 입력'}</div>
+                  <div class="product-name" contenteditable="true" spellcheck="false" data-edit-key="pname-${p.startDay}">${esc(sn)}</div>
+                  <div class="product-desc" contenteditable="true" spellcheck="false" data-edit-key="pdesc-${p.startDay}">${dh||'설명 입력'}</div>
                 </div>
               </div>`;
             });
