@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 그룹 스터디 커리큘럼</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #FFF5EE;
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px 60px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #fff;
+      border: 1.5px solid #FF8C42;
+      color: #FF8C42;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 18px;
+      border-radius: 30px;
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      color: #222;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .page-desc {
+      font-size: 14px;
+      color: #888;
+      text-align: center;
+      line-height: 1.8;
+      margin-bottom: 28px;
+    }
+
+    .hero-card {
+      width: 100%;
+      max-width: 620px;
+      background: linear-gradient(135deg, #FF8C42, #FF6B2B);
+      border-radius: 20px;
+      padding: 32px 28px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 24px rgba(255,140,66,0.25);
+      color: #fff;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+    .hero-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .hero-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .hero-tag {
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .overview {
+      width: 100%;
+      max-width: 620px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .overview-item {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px 16px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .overview-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .overview-label {
+      font-size: 11px;
+      color: #999;
+      margin-bottom: 4px;
+    }
+    .overview-value {
+      font-family: 'Jua', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .track-section {
+      width: 100%;
+      max-width: 620px;
+      margin-bottom: 28px;
+    }
+    .track-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .track-num {
+      background: linear-gradient(135deg, #FF8C42, #FF6B2B);
+      color: #fff;
+      font-family: 'Jua', sans-serif;
+      font-size: 13px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .track-title-wrap {
+      flex: 1;
+    }
+    .track-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: #333;
+    }
+    .track-subtitle {
+      font-size: 12px;
+      color: #FF8C42;
+      font-weight: 600;
+    }
+
+    .track-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+    }
+
+    .track-desc {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.8;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #f0ebe6;
+    }
+
+    .task-group {
+      margin-bottom: 16px;
+    }
+    .task-group:last-child {
+      margin-bottom: 0;
+    }
+    .task-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #FF6B2B;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .task-list {
+      list-style: none;
+    }
+    .task-list li {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.7;
+      padding: 4px 0 4px 20px;
+      position: relative;
+    }
+    .task-list li::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 11px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #FFD4B0;
+    }
+
+    .option-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .option-card {
+      background: #FFF9F4;
+      border: 1.5px solid #FFE4CC;
+      border-radius: 12px;
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .option-card.recommended {
+      border-color: #FF8C42;
+      background: linear-gradient(180deg, #FFF5EE, #FFEEDD);
+    }
+    .option-badge {
+      font-size: 10px;
+      font-weight: 700;
+      color: #FF6B2B;
+      margin-bottom: 6px;
+    }
+    .option-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    .option-desc {
+      font-size: 11px;
+      color: #999;
+      line-height: 1.5;
+    }
+
+    .divider {
+      width: 100%;
+      max-width: 620px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #FFD4B0, transparent);
+      margin: 8px 0 32px;
+    }
+
+    .note-card {
+      width: 100%;
+      max-width: 620px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+      border-left: 4px solid #FF8C42;
+    }
+    .note-title {
+      font-family: 'Jua', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #FF6B2B;
+      margin-bottom: 10px;
+    }
+    .note-list {
+      list-style: none;
+    }
+    .note-list li {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.8;
+      padding: 2px 0 2px 20px;
+      position: relative;
+    }
+    .note-list li::before {
+      content: '';
+      position: absolute;
+      left: 4px;
+      top: 12px;
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      background: #FF8C42;
+    }
+
+    .cta-section {
+      width: 100%;
+      max-width: 620px;
+      text-align: center;
+      margin-top: 8px;
+    }
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #FF8C42, #FF6B2B);
+      color: #fff;
+      font-family: 'Jua', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 16px 48px;
+      border-radius: 14px;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(255,107,43,0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(255,107,43,0.4);
+    }
+    .cta-sub {
+      font-size: 12px;
+      color: #bbb;
+      margin-top: 12px;
+    }
+
+    .host-info {
+      width: 100%;
+      max-width: 620px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding: 16px 20px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .host-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF8C42, #FF6B2B);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .host-name {
+      font-family: 'Jua', sans-serif;
+      font-size: 15px;
+      color: #333;
+    }
+    .host-desc {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 20px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(180deg, #FFD4B0, #FF8C42, #FFD4B0);
+      border-radius: 2px;
+    }
+    .timeline-item {
+      position: relative;
+      padding-bottom: 20px;
+    }
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -17px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #FF8C42;
+      border: 2px solid #FFF5EE;
+    }
+    .timeline-content {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.7;
+    }
+    .timeline-week {
+      font-weight: 700;
+      color: #FF6B2B;
+      font-size: 12px;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 24px 12px 48px; }
+      .page-title { font-size: 24px; }
+      .hero-card { padding: 24px 20px; }
+      .overview { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .overview-item { padding: 14px 10px; }
+      .overview-value { font-size: 14px; }
+      .option-cards { grid-template-columns: 1fr; }
+      .track-card { padding: 20px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="badge">@friendly-pharmacist</div>
+  <h1 class="page-title">AI 그룹 스터디 커리큘럼</h1>
+  <p class="page-desc">
+    약사님을 위한 4주 AI 실전 활용 프로그램<br />
+    주 1회 오프라인 모임(1h) + 과제 수행
+  </p>
+
+  <!-- Host -->
+  <div class="host-info">
+    <div class="host-avatar">&#x1F48A;</div>
+    <div>
+      <div class="host-name">호스트: 친한약사</div>
+      <div class="host-desc">약사 개인채널 운영 &middot; AI 활용 콘텐츠 제작</div>
+    </div>
+  </div>
+
+  <!-- Hero Card -->
+  <div class="hero-card">
+    <div class="hero-badge">2026 SEASON 1</div>
+    <div class="hero-title">약사를 위한 AI 실전 활용 스터디</div>
+    <div class="hero-desc">
+      AI를 처음 접하는 약사님부터, 업무에 바로 적용하고 싶은 약사님까지.<br />
+      4주간 실습과 과제를 통해 나만의 AI 활용법을 만들어갑니다.
+    </div>
+    <div class="hero-tags">
+      <span class="hero-tag">4주 과정</span>
+      <span class="hero-tag">주 1회 오프라인</span>
+      <span class="hero-tag">정원 9명</span>
+      <span class="hero-tag">호스트 3명 + 게스트 6명</span>
+    </div>
+  </div>
+
+  <!-- Overview -->
+  <div class="overview">
+    <div class="overview-item">
+      <div class="overview-icon">&#x1F4C5;</div>
+      <div class="overview-label">기간</div>
+      <div class="overview-value">4주</div>
+    </div>
+    <div class="overview-item">
+      <div class="overview-icon">&#x1F91D;</div>
+      <div class="overview-label">모임</div>
+      <div class="overview-value">주 1회 오프라인</div>
+    </div>
+    <div class="overview-item">
+      <div class="overview-icon">&#x1F465;</div>
+      <div class="overview-label">정원</div>
+      <div class="overview-value">최대 9명</div>
+    </div>
+  </div>
+
+  <!-- 운영 구조 -->
+  <div class="note-card">
+    <div class="note-title">운영 구조</div>
+    <ul class="note-list">
+      <li><strong>호스트 (3명)</strong> &mdash; 커리큘럼 설계, 과제 플래닝, 문의 답변 담당</li>
+      <li><strong>게스트 (최대 6명)</strong> &mdash; 호스트 인원의 2배수로 모집, 과제 수행</li>
+      <li><strong>오프라인 모임 (1시간)</strong> &mdash; 지난 과제 리뷰 &rarr; Q&amp;A &rarr; 다음 과제 플래닝 &rarr; 문의 답변</li>
+      <li><strong>과제 수행</strong> &mdash; 모임 후 다음 수업 전까지 개별 과제 진행</li>
+      <li><strong>개인채널 연계</strong> &mdash; 과제 결과물을 약사님 개인 채널 콘텐츠로 활용</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Week 1 -->
+  <div class="track-section">
+    <div class="track-header">
+      <div class="track-num">1</div>
+      <div class="track-title-wrap">
+        <div class="track-title">환경 세팅 & 프로젝트 실행/배포</div>
+        <div class="track-subtitle">Week 1 &middot; 오프라인 모임 (1h)</div>
+      </div>
+    </div>
+    <div class="track-card">
+      <div class="track-desc">
+        개발 환경을 세팅하고, 실제 프로젝트(공구 캘린더/스터디 지원서)를
+        다운로드 받아 로컬에서 실행해봅니다. Cloudflare Pages로 배포까지 완료합니다.
+      </div>
+
+      <div class="task-group">
+        <div class="task-label">&#x1F91D; 오프라인 모임 (1시간)</div>
+        <ul class="task-list">
+          <li>로컬 개발 환경 세팅 (VS Code, 터미널, Node.js 설치)</li>
+          <li>AI 도구 소개 & 계정 세팅 (ChatGPT / Claude)</li>
+          <li>GitHub에서 프로젝트 다운로드 (git clone)</li>
+          <li>로컬 서버 실행 &mdash; <code>npx serve .</code> 로 브라우저에서 확인</li>
+          <li>Cloudflare Pages 배포 체험 &mdash; 내 URL로 실제 서비스 올리기</li>
+          <li>Q&amp;A 및 문의 답변</li>
+        </ul>
+      </div>
+
+      <div class="task-group">
+        <div class="task-label">&#x1F4DD; 과제 &mdash; 다음 수업 전까지</div>
+        <div class="option-cards">
+          <div class="option-card recommended">
+            <div class="option-badge">필수</div>
+            <div class="option-title">프로젝트 실행</div>
+            <div class="option-desc">공구 캘린더 &amp; 스터디 지원서를 로컬에서 실행하고 코드 구조 파악</div>
+          </div>
+          <div class="option-card recommended">
+            <div class="option-badge">필수</div>
+            <div class="option-title">배포 완료</div>
+            <div class="option-desc">Cloudflare Pages에 배포하여 내 도메인으로 접속 확인</div>
+          </div>
+          <div class="option-card">
+            <div class="option-badge">&nbsp;</div>
+            <div class="option-title">코드 수정 도전</div>
+            <div class="option-desc">AI에게 요청하여 텍스트/색상/레이아웃 변경 후 재배포</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Week 2 -->
+  <div class="track-section">
+    <div class="track-header">
+      <div class="track-num">2</div>
+      <div class="track-title-wrap">
+        <div class="track-title">AI 이미지 생성 & 콘텐츠 제작</div>
+        <div class="track-subtitle">Week 2 &middot; 오프라인 모임 (1h)</div>
+      </div>
+    </div>
+    <div class="track-card">
+      <div class="track-desc">
+        1주차 과제를 리뷰하고, AI 이미지 생성 도구 활용법을 소개합니다.
+        이번 주 과제인 "AI 이미지로 콘텐츠 만들기"를 함께 플래닝합니다.
+      </div>
+
+      <div class="task-group">
+        <div class="task-label">&#x1F91D; 오프라인 모임 (1시간)</div>
+        <ul class="task-list">
+          <li>1주차 과제 리뷰: 각자 만든 웹 폼 시연 & 호스트 피드백</li>
+          <li>AI 이미지 생성 도구 소개 (ChatGPT DALL-E / Midjourney 등)</li>
+          <li>이미지 프롬프트 작성 팁 & 활용 사례 공유</li>
+          <li>과제 플래닝 + Q&amp;A 및 문의 답변</li>
+        </ul>
+      </div>
+
+      <div class="task-group">
+        <div class="task-label">&#x1F4DD; 과제 &mdash; 다음 수업 전까지 (택 1)</div>
+        <div class="option-cards">
+          <div class="option-card recommended">
+            <div class="option-badge">추천</div>
+            <div class="option-title">건강 카드뉴스</div>
+            <div class="option-desc">AI 생성 이미지로 건강 정보 카드뉴스 3장 세트 제작</div>
+          </div>
+          <div class="option-card">
+            <div class="option-badge">&nbsp;</div>
+            <div class="option-title">약국 홍보 포스터</div>
+            <div class="option-desc">시즌 이벤트 또는 신제품 홍보 포스터 AI로 제작</div>
+          </div>
+          <div class="option-card">
+            <div class="option-badge">&nbsp;</div>
+            <div class="option-title">채널 브랜딩 킷</div>
+            <div class="option-desc">프로필 이미지 + 하이라이트 커버 + 피드 템플릿 제작</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Week 3 -->
+  <div class="track-section">
+    <div class="track-header">
+      <div class="track-num">3</div>
+      <div class="track-title-wrap">
+        <div class="track-title">공동구매 캘린더 & 데이터 시각화</div>
+        <div class="track-subtitle">Week 3 &middot; 오프라인 모임 (1h)</div>
+      </div>
+    </div>
+    <div class="track-card">
+      <div class="track-desc">
+        2주차 과제를 리뷰하고, Google Sheets API 연동 + 이미지 자동 생성 방법을 소개합니다.
+        이번 주 과제인 "데이터 기반 콘텐츠 자동화"를 함께 플래닝합니다.
+      </div>
+
+      <div class="task-group">
+        <div class="task-label">&#x1F91D; 오프라인 모임 (1시간)</div>
+        <ul class="task-list">
+          <li>2주차 과제 리뷰: AI 생성 이미지 콘텐츠 공유 & 피드백</li>
+          <li>Google Sheets API 연동 방법 안내 (데이터 실시간 읽기)</li>
+          <li>html2canvas로 DOM &rarr; PNG 변환 원리 소개</li>
+          <li>과제 플래닝 + Q&amp;A 및 문의 답변</li>
+        </ul>
+      </div>
+
+      <div class="task-group">
+        <div class="task-label">&#x1F4DD; 과제 &mdash; 다음 수업 전까지 (택 1)</div>
+        <div class="option-cards">
+          <div class="option-card recommended">
+            <div class="option-badge">추천</div>
+            <div class="option-title">공구 캘린더</div>
+            <div class="option-desc">공동구매 일정을 캘린더 이미지로 자동 생성하는 웹 앱</div>
+          </div>
+          <div class="option-card">
+            <div class="option-badge">&nbsp;</div>
+            <div class="option-title">매출 대시보드</div>
+            <div class="option-desc">약국 매출 데이터를 시각화하는 관리자 페이지 제작</div>
+          </div>
+          <div class="option-card">
+            <div class="option-badge">&nbsp;</div>
+            <div class="option-title">제품 카탈로그</div>
+            <div class="option-desc">스프레드시트 기반 추천 제품 카탈로그 자동 생성</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Week 4 -->
+  <div class="track-section">
+    <div class="track-header">
+      <div class="track-num">4</div>
+      <div class="track-title-wrap">
+        <div class="track-title">최종 발표 & 네트워킹</div>
+        <div class="track-subtitle">Week 4 &middot; 오프라인 모임 (1h / 파이널)</div>
+      </div>
+    </div>
+    <div class="track-card">
+      <div class="track-desc">
+        3주간 만든 결과물을 종합하여 발표합니다.
+        나만의 AI 활용 사례를 공유하고, 개인 채널 운영 전략을 수립합니다.
+      </div>
+
+      <div class="task-group">
+        <div class="task-label">&#x1F91D; 오프라인 모임 (1시간)</div>
+        <ul class="task-list">
+          <li>3주차 과제 리뷰: 캘린더/대시보드 시연 & 피드백</li>
+          <li>최종 발표: 4주간 가장 임팩트 있는 활용 사례 (인당 5~10분)</li>
+          <li>개인 채널 AI 활용 로드맵 공유</li>
+          <li>호스트 종합 피드백 및 수료</li>
+        </ul>
+      </div>
+
+      <div class="task-group">
+        <div class="task-label">&#x1F37B; 네트워킹</div>
+        <ul class="task-list">
+          <li>약사 AI 활용 커뮤니티 채널 안내</li>
+          <li>자유 네트워킹 & 향후 스터디 시즌 안내</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 4주 타임라인 -->
+  <div class="note-card">
+    <div class="note-title">4주 한눈에 보기</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-week">Week 1</div>
+          환경 세팅 + 프로젝트 실행/배포 &rarr; 과제: 로컬 실행 &amp; Cloudflare 배포 완료
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-week">Week 2</div>
+          AI 이미지 생성 &rarr; 과제: 카드뉴스/홍보포스터/브랜딩킷 제작
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-week">Week 3</div>
+          캘린더 & 데이터 시각화 &rarr; 과제: 공구캘린더/매출대시보드/카탈로그
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="timeline-week">Week 4</div>
+          최종 발표 + 네트워킹 &rarr; AI 활용 로드맵 공유 & 수료
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 참고사항 -->
+  <div class="note-card">
+    <div class="note-title">참고사항</div>
+    <ul class="note-list">
+      <li>매주 과제는 <strong>2~3가지 중 1개</strong>를 선택하여 수행합니다</li>
+      <li>과제 결과물은 <strong>개인 채널 콘텐츠</strong>로 바로 활용 가능합니다</li>
+      <li>오프라인 모임은 <strong>필수 참석</strong>이며, 불참 시 사전 연락 부탁드립니다</li>
+      <li>스터디 확정 시 <strong>내부 슬랙 채널</strong>로 상세 일정을 안내드립니다</li>
+      <li>노트북(Windows 또는 Mac) 지참 필수</li>
+    </ul>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <a href="https://influencer-p68.pages.dev/study" class="cta-btn">스터디 지원하기</a>
+    <div class="cta-sub">모집 마감 시 조기 종료될 수 있습니다</div>
+  </div>
+
+</body>
+</html>

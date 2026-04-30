@@ -333,6 +333,26 @@
       transition: width 0.3s;
     }
 
+    .admin-btn {
+      position: fixed;
+      top: 16px; right: 16px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid #e0dbd9;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: #a09a97;
+      transition: all 0.2s;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .admin-btn:hover { border-color: #FF8C42; color: #FF8C42; }
+
     @media (max-width: 600px) {
       .form-row { flex-direction: column; gap: 0; }
       .scale-item { padding: 10px 2px; font-size: 11px; }
@@ -341,6 +361,7 @@
 </head>
 <body>
 
+  <button class="admin-btn" id="admin-btn" onclick="location.href='study-admin.html'" title="관리자">&#9881;</button>
   <span class="badge">friendly-pharmacist</span>
   <h1 class="page-title">AI 그룹 스터디 지원서</h1>
   <p class="page-desc">
@@ -355,9 +376,9 @@
     <div class="info-title">약사를 위한 AI 실무 활용 그룹 스터디</div>
     <div class="info-desc">생성형 AI를 약국 실무에 바로 적용할 수 있도록, 소규모 그룹으로 함께 배우고 실습하는 스터디입니다.</div>
     <div class="info-tags">
-      <span class="info-tag">기간 8주</span>
+      <span class="info-tag">기간 4주</span>
       <span class="info-tag">주 1회 온라인</span>
-      <span class="info-tag">정원 10명</span>
+      <span class="info-tag">정원 4~6명</span>
       <span class="info-tag">호스트: 친한약사</span>
     </div>
   </div>
@@ -374,46 +395,16 @@
         <input type="text" class="form-input" name="name" placeholder="홍길동" required />
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">전화번호 <span class="required">*</span></label>
-          <input type="tel" class="form-input" name="phone" placeholder="010-1234-5678" required />
-        </div>
-        <div class="form-group">
-          <label class="form-label">이메일</label>
-          <input type="email" class="form-input" name="email" placeholder="example@email.com" />
-        </div>
-      </div>
-
       <div class="form-group">
-        <label class="form-label">인스타그램 아이디 <span class="required">*</span></label>
-        <input type="text" class="form-input" name="instagram" placeholder="@ instagram_id" required />
+        <label class="form-label">주로 사용하는 장비 <span class="required">*</span>
+          <span class="hint">(복수 선택 가능)</span>
+        </label>
+        <div class="checkbox-group">
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="device" value="노트북(Windows)">노트북(Windows)</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" name="device" value="노트북(Mac)">노트북(Mac)</label>
+        </div>
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">근무 유형 <span class="required">*</span></label>
-          <select class="form-select" name="pharmacy_type" required>
-            <option value="">선택</option>
-            <option value="개국약사">개국약사</option>
-            <option value="근무약사">근무약사</option>
-            <option value="병원약사">병원약사</option>
-            <option value="제약회사">제약회사</option>
-            <option value="기타">기타</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">경력</label>
-          <select class="form-select" name="experience">
-            <option value="">선택</option>
-            <option value="1년 미만">1년 미만</option>
-            <option value="1~3년">1~3년</option>
-            <option value="3~5년">3~5년</option>
-            <option value="5~10년">5~10년</option>
-            <option value="10년 이상">10년 이상</option>
-          </select>
-        </div>
-      </div>
     </div>
 
     <!-- 섹션 2: AI 사용 경험 -->
@@ -600,7 +591,7 @@
   <div class="success-card" id="success-card">
     <div class="icon">&#127891;</div>
     <h3>지원 완료!</h3>
-    <p>설문 참여 감사합니다.<br>스터디 확정 시 인스타그램 DM으로 안내드릴게요.<br><br>함께 성장하는 AI 스터디가 되겠습니다!</p>
+    <p>설문 참여 감사합니다.<br>스터디 확정 시 내부 슬랙 채널로 안내드릴게요.<br><br>함께 성장하는 AI 스터디가 되겠습니다!</p>
   </div>
 
   <script>
@@ -676,7 +667,7 @@
       updateProgress();
     }
 
-    function submitForm(e) {
+    async function submitForm(e) {
       e.preventDefault();
       const form = e.target;
 
@@ -704,6 +695,22 @@
         } else obj[k] = v;
       });
       obj.submittedAt = new Date().toISOString();
+
+      const submitBtn = document.querySelector('.btn-submit');
+      submitBtn.textContent = '제출 중...';
+      submitBtn.disabled = true;
+
+      const scriptUrl = localStorage.getItem('study_script_url');
+      if (scriptUrl) {
+        try {
+          await fetch(scriptUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(obj)
+          });
+        } catch(e) {}
+      }
 
       const submissions = JSON.parse(localStorage.getItem('study_submissions') || '[]');
       submissions.push(obj);
