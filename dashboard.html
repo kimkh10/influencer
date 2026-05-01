@@ -1705,8 +1705,6 @@
     let detail = null;
     try {
       detail = await fetchPlanDetail(planId);
-      console.log('Plan detail keys:', Object.keys(detail || {}));
-      console.log('Plan detail:', JSON.stringify(detail, null, 2));
     } catch (e) {
       console.warn('상세 API 실패, 목록 데이터로 표시:', e.message);
     }
@@ -1737,7 +1735,12 @@
       '</div></div>';
 
     // 매출 요약
-    const hasReport = report.order_count_total || report.normal_order_amount_total;
+    const hasReport = report && (report.order_count_total || report.normal_order_amount_total);
+    if (!report || !hasReport) {
+      html += '<div class="modal-section"><h4>매출 현황</h4>' +
+        '<div style="padding:16px;background:var(--bg-secondary);border-radius:8px;font-size:13px;color:var(--text-tertiary);text-align:center">' +
+        '아직 매출 데이터가 없습니다. 공구 진행 후 주문이 발생하면 표시됩니다.</div></div>';
+    }
     if (hasReport) {
       html += '<div class="modal-section"><h4>매출 요약</h4>' +
         '<div class="modal-info-grid">' +
