@@ -21,6 +21,8 @@ influencer/
 ├── study-curriculum.html     ← 스터디 커리큘럼 안내 페이지
 ├── study-skills-practice.html← 스킬 실습 가이드 (수업 자료)
 ├── dashboard.html            ← 공구 매출 대시보드 (API 직접 호출)
+├── functions/
+│   └── api/[[path]].js       ← Cloudflare Pages CORS 프록시
 ├── event-prompt.md           ← 당첨자폼 상세 스펙 (참조용)
 ├── CLAUDE.md                 ← 이 파일
 ├── PLAN.md                   ← 프로젝트 플랜
@@ -36,6 +38,7 @@ influencer/
 | `/당첨자폼` | 이벤트 당첨자 배송지 폼(event.html, event-admin.html) 생성/수정 |
 | `/커리큘럼` | AI 스터디 커리큘럼(study-curriculum.html) 생성/수정 |
 | `/공구대시보드` | 공구 매출 대시보드(dashboard.html) 수정 |
+| `/프록시` | Cloudflare Pages Functions CORS 프록시 생성/수정 |
 | `/deploy` | Cloudflare Pages 배포 |
 | `/add-product` | 캘린더에 새 제품 매핑 추가 |
 | `/setup` | 프로젝트 설정 상태 점검 |

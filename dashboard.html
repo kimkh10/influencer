@@ -195,6 +195,63 @@
       color: var(--red);
     }
 
+    .tfa-notice {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: rgba(45,212,191,0.08);
+      border: 1px solid rgba(45,212,191,0.25);
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--teal);
+      line-height: 1.5;
+    }
+    .tfa-notice svg { flex-shrink: 0; }
+
+    .tfa-code-wrap {
+      position: relative;
+    }
+    .tfa-code-wrap input {
+      width: 100%;
+      padding: 10px 70px 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-mono);
+      font-size: 18px;
+      letter-spacing: 6px;
+      text-align: center;
+      background: var(--surface);
+      color: var(--text-primary);
+    }
+    .tfa-code-wrap input:focus { outline: none; border-color: var(--teal); }
+    .tfa-timer {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--red);
+    }
+    .tfa-timer.expired { color: var(--text-tertiary); }
+
+    .tfa-resend {
+      margin-top: 12px;
+      text-align: center;
+    }
+    .tfa-resend a {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      text-decoration: none;
+      border-bottom: 1px dashed var(--text-tertiary);
+      transition: color 0.15s;
+    }
+    .tfa-resend a:hover { color: var(--teal); border-color: var(--teal); }
+
     .login-hint {
       margin-top: 16px;
       font-size: 11px;
@@ -837,6 +894,28 @@
         </div>
       </div>
 
+      <!-- 2FA -->
+      <div class="login-mode" id="login-mode-2fa">
+        <div class="tfa-notice">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10.5 L9 13 L13.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          슬랙에 발송된 2차 인증번호를 확인해 주세요.
+        </div>
+
+        <div class="field">
+          <label>인증번호</label>
+          <div class="tfa-code-wrap">
+            <input type="text" id="input-2fa" placeholder="인증번호를 입력하세요." maxlength="6" spellcheck="false" autocomplete="off" />
+            <span class="tfa-timer" id="tfa-timer">04:00</span>
+          </div>
+        </div>
+
+        <button class="btn-connect" onclick="verify2fa()">로그인</button>
+
+        <div class="tfa-resend">
+          <a onclick="resend2fa()">인증번호 재발송</a>
+        </div>
+      </div>
+
       <div class="login-err" id="login-err"></div>
 
       <div class="login-hint">
@@ -965,6 +1044,9 @@
   let sortDir = 'desc';
   let planChart = null;
   let commissionChart = null;
+  let tfa_adminId = '';
+  let tfa_adminIdx = 0;
+  let tfaTimerId = null;
 
   // ── Utilities ──
 
@@ -1025,7 +1107,9 @@
   window.toggleLoginMode = function(mode) {
     document.getElementById('login-mode-pw').classList.toggle('active', mode === 'pw');
     document.getElementById('login-mode-token').classList.toggle('active', mode === 'token');
+    document.getElementById('login-mode-2fa').classList.toggle('active', mode === '2fa');
     document.getElementById('login-err').style.display = 'none';
+    if (mode !== '2fa') stopTfaTimer();
   };
 
   window.loginWithCredentials = async function() {
@@ -1062,8 +1146,9 @@
       const is2Fa = loginData.is2FaAuth;
 
       if (is2Fa) {
-        errEl.textContent = '2차 인증이 필요한 계정입니다. 토큰 직접 입력을 이용하세요.';
-        errEl.style.display = 'block';
+        tfa_adminId = loginData.adminId || adminId;
+        tfa_adminIdx = loginData.adminIdx || 0;
+        await send2faCode();
         return;
       }
 
@@ -1116,7 +1201,105 @@
     bearerToken = '';
     cachedPlans = [];
     cachedSellers = [];
+    stopTfaTimer();
     location.reload();
+  };
+
+  // ── 2FA ──
+
+  async function send2faCode() {
+    const errEl = document.getElementById('login-err');
+    try {
+      const res = await fetch(API_BASE + '/api/admin/v2/authentications/2fa/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ adminId: tfa_adminId, adminIdx: tfa_adminIdx })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        errEl.textContent = err.message || '2FA 인증번호 발송 실패';
+        errEl.style.display = 'block';
+        return;
+      }
+      toggleLoginMode('2fa');
+      document.getElementById('input-2fa').value = '';
+      document.getElementById('input-2fa').focus();
+      startTfaTimer();
+    } catch (e) {
+      errEl.textContent = '2FA 발송 실패: ' + e.message;
+      errEl.style.display = 'block';
+    }
+  }
+
+  function startTfaTimer() {
+    stopTfaTimer();
+    let remaining = 240;
+    const timerEl = document.getElementById('tfa-timer');
+    timerEl.classList.remove('expired');
+    function tick() {
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      timerEl.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+      if (remaining <= 0) {
+        stopTfaTimer();
+        timerEl.classList.add('expired');
+        return;
+      }
+      remaining--;
+    }
+    tick();
+    tfaTimerId = setInterval(tick, 1000);
+  }
+
+  function stopTfaTimer() {
+    if (tfaTimerId) { clearInterval(tfaTimerId); tfaTimerId = null; }
+  }
+
+  window.verify2fa = async function() {
+    const code = document.getElementById('input-2fa').value.trim();
+    const errEl = document.getElementById('login-err');
+    if (!code) {
+      errEl.textContent = '인증번호를 입력하세요.';
+      errEl.style.display = 'block';
+      return;
+    }
+    errEl.style.display = 'none';
+    try {
+      const res = await fetch(API_BASE + '/api/admin/v2/authentications/2fa/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ adminId: tfa_adminId, adminIdx: tfa_adminIdx, code })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        errEl.textContent = data.message || '인증번호가 올바르지 않습니다.';
+        errEl.style.display = 'block';
+        return;
+      }
+      stopTfaTimer();
+      const loginData = data.data || data;
+      const tokenObj = loginData.token || {};
+      const token = tokenObj.accessToken || tokenObj.access_token || '';
+      if (!token) {
+        console.log('2FA verify response:', JSON.stringify(data, null, 2));
+        errEl.textContent = '토큰을 찾지 못했습니다. 콘솔(F12)에서 응답을 확인하세요.';
+        errEl.style.display = 'block';
+        return;
+      }
+      bearerToken = token;
+      localStorage.setItem(TOKEN_KEY, token);
+      showDashboard();
+    } catch (e) {
+      errEl.textContent = '인증 실패: ' + e.message;
+      errEl.style.display = 'block';
+    }
+  };
+
+  window.resend2fa = async function() {
+    const errEl = document.getElementById('login-err');
+    errEl.style.display = 'none';
+    await send2faCode();
+    showToast('인증번호가 재발송되었습니다.');
   };
 
   function showDashboard() {
@@ -1656,6 +1839,9 @@
   });
   document.getElementById('input-id').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') document.getElementById('input-pw').focus();
+  });
+  document.getElementById('input-2fa').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') verify2fa();
   });
 
   // ── Init ──
