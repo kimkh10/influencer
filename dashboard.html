@@ -1266,9 +1266,9 @@
     errEl.style.display = 'none';
     try {
       const res = await fetch(API_BASE + '/api/admin/v2/authentications/2fa/verify', {
-        method: 'POST',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ adminId: tfa_adminId, adminIdx: tfa_adminIdx, code })
+        body: JSON.stringify({ adminId: tfa_adminId, adminIdx: tfa_adminIdx, authCode: code })
       });
       const data = await res.json();
       if (!res.ok) {
