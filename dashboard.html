@@ -1705,6 +1705,8 @@
     let detail = null;
     try {
       detail = await fetchPlanDetail(planId);
+      console.log('Plan detail keys:', Object.keys(detail || {}));
+      console.log('Plan detail:', JSON.stringify(detail, null, 2));
     } catch (e) {
       console.warn('상세 API 실패, 목록 데이터로 표시:', e.message);
     }
