@@ -997,8 +997,9 @@
       <div class="filter-btns">
         <button class="filter-btn active" data-filter="all" onclick="handleFilter('all')">전체</button>
         <button class="filter-btn" data-filter="active" onclick="handleFilter('active')">진행중</button>
+        <button class="filter-btn" data-filter="upcoming" onclick="handleFilter('upcoming')">진행예정</button>
         <button class="filter-btn" data-filter="completed" onclick="handleFilter('completed')">완료</button>
-        <button class="filter-btn" data-filter="preparing" onclick="handleFilter('preparing')">준비중</button>
+        <button class="filter-btn" data-filter="cancelled" onclick="handleFilter('cancelled')">취소/보류</button>
       </div>
     </div>
 
@@ -1338,7 +1339,9 @@
 
   function getStepLabel(code) { return STEP_LABELS[code] || code || '-'; }
 
-  function isActiveStep(code) { return ['T4','T6','T8','Y0'].includes(code); }
+  function isActiveStep(code) { return code === 'Y0'; }
+  function isCompletedStep(code) { return code === 'Y8'; }
+  function isUpcomingStep(code) { return ['T0','T2','T4','T6','T8'].includes(code); }
 
   async function fetchPlans(limit, offset) {
     const l = limit || 100;
@@ -1567,11 +1570,13 @@
     let result = [...cachedPlans];
 
     if (currentFilter === 'active') {
-      result = result.filter(p => ['T4','T6','T8','Y0'].includes(p.stepCode));
+      result = result.filter(p => p.stepCode === 'Y0');
     } else if (currentFilter === 'completed') {
-      result = result.filter(p => ['Y8'].includes(p.stepCode));
-    } else if (currentFilter === 'preparing') {
-      result = result.filter(p => ['T0','T2'].includes(p.stepCode));
+      result = result.filter(p => p.stepCode === 'Y8');
+    } else if (currentFilter === 'upcoming') {
+      result = result.filter(p => isUpcomingStep(p.stepCode));
+    } else if (currentFilter === 'cancelled') {
+      result = result.filter(p => ['C0','C4'].includes(p.stepCode));
     }
 
     const q = document.getElementById('search-input').value.trim().toLowerCase();
