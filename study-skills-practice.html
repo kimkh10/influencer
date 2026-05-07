@@ -614,12 +614,18 @@ html, body {
       </div>
 
       <div class="step-card">
-        <div class="step-label">Step 7 — 프로젝트 다운로드</div>
-        <p>GitHub에서 프로젝트를 클론합니다.</p>
+        <div class="step-label">Step 7 — 프로젝트 다운로드 + 개인 레포 연결</div>
+        <p>원본 프로젝트를 클론한 뒤, 본인의 GitHub 레포로 연결합니다.</p>
         <div class="code-block">
+          <span class="comment"># 1. 원본 클론</span><br>
           <span class="command">git</span> clone <span class="url">https://github.com/kimkh10/influencer.git</span><br>
-          <span class="command">cd</span> influencer
+          <span class="command">cd</span> influencer<br><br>
+          <span class="comment"># 2. 본인 GitHub에 "influencer" 빈 레포 생성 후 remote 변경</span><br>
+          <span class="command">git</span> remote set-url origin https://github.com/<span class="flag">본인아이디</span>/influencer.git<br><br>
+          <span class="comment"># 3. 개인 레포로 push</span><br>
+          <span class="command">git</span> push <span class="flag">-u</span> origin main
         </div>
+        <div class="tip"><strong>왜 개인 레포로 옮기나요?</strong> 원본 레포는 읽기 전용입니다. 개인 레포로 연결해야 실습 중 수정한 코드를 push하고 배포할 수 있습니다.</div>
       </div>
 
       <div class="step-card">
@@ -735,12 +741,18 @@ html, body {
       </div>
 
       <div class="step-card">
-        <div class="step-label">Step 6 — 프로젝트 다운로드</div>
-        <p>GitHub에서 프로젝트를 클론합니다.</p>
+        <div class="step-label">Step 6 — 프로젝트 다운로드 + 개인 레포 연결</div>
+        <p>원본 프로젝트를 클론한 뒤, 본인의 GitHub 레포로 연결합니다.</p>
         <div class="code-block">
+          <span class="comment"># 1. 원본 클론</span><br>
           <span class="command">git</span> clone <span class="url">https://github.com/kimkh10/influencer.git</span><br>
-          <span class="command">cd</span> influencer
+          <span class="command">cd</span> influencer<br><br>
+          <span class="comment"># 2. 본인 GitHub에 "influencer" 빈 레포 생성 후 remote 변경</span><br>
+          <span class="command">git</span> remote set-url origin https://github.com/<span class="flag">본인아이디</span>/influencer.git<br><br>
+          <span class="comment"># 3. 개인 레포로 push</span><br>
+          <span class="command">git</span> push <span class="flag">-u</span> origin main
         </div>
+        <div class="tip"><strong>왜 개인 레포로 옮기나요?</strong> 원본 레포는 읽기 전용입니다. 개인 레포로 연결해야 실습 중 수정한 코드를 push하고 배포할 수 있습니다.</div>
       </div>
 
       <div class="step-card">
