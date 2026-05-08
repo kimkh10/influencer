@@ -630,7 +630,16 @@ html, body {
       </div>
 
       <div class="step-card">
-        <div class="step-label">Step 8 — cmux에서 서버 + Claude Code 동시 실행</div>
+        <div class="step-label">Step 8 — Wrangler 설치</div>
+        <p>로컬에서 CORS 프록시를 포함한 개발 서버를 실행하려면 Cloudflare의 <strong>Wrangler</strong> CLI가 필요합니다.</p>
+        <div class="code-block">
+          <span class="command">npm</span> install <span class="flag">-g</span> wrangler
+        </div>
+        <div class="tip"><strong>Wrangler란?</strong> Cloudflare Pages/Workers 로컬 개발 및 배포 도구입니다. <code>npx serve .</code>와 달리 CORS 프록시(<code>functions/api/</code>)까지 로컬에서 실행해줍니다.</div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-label">Step 9 — cmux에서 서버 + Claude Code 동시 실행</div>
         <p>cmux를 열고, 화면을 분할하여 한쪽에서 서버를 띄우고 다른 쪽에서 Claude Code를 실행합니다.</p>
         <div class="code-block">
           <span class="comment"># 패널 1: 로컬 서버 실행 (CORS 프록시 포함)</span><br>
@@ -757,7 +766,16 @@ html, body {
       </div>
 
       <div class="step-card">
-        <div class="step-label">Step 7 — 로컬 서버 실행</div>
+        <div class="step-label">Step 7 — Wrangler 설치</div>
+        <p>로컬에서 CORS 프록시를 포함한 개발 서버를 실행하려면 Cloudflare의 <strong>Wrangler</strong> CLI가 필요합니다.</p>
+        <div class="code-block">
+          <span class="command">npm</span> install <span class="flag">-g</span> wrangler
+        </div>
+        <div class="tip"><strong>Wrangler란?</strong> Cloudflare Pages/Workers 로컬 개발 및 배포 도구입니다. <code>npx serve .</code>와 달리 CORS 프록시(<code>functions/api/</code>)까지 로컬에서 실행해줍니다.</div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-label">Step 8 — 로컬 서버 실행</div>
         <p>프로젝트를 브라우저에서 확인합니다. CORS 프록시가 포함된 서버를 실행합니다.</p>
         <div class="code-block">
           <span class="command">npx</span> wrangler pages dev .
@@ -767,7 +785,7 @@ html, body {
       </div>
 
       <div class="step-card">
-        <div class="step-label">Step 8 — 터미널 분할 + Claude Code 실행</div>
+        <div class="step-label">Step 9 — 터미널 분할 + Claude Code 실행</div>
         <p>서버가 실행 중인 상태에서 화면을 분할하여 Claude Code를 동시에 띄웁니다.<br>
         <span style="font-size:11px;color:#999;">(Mac에서는 cmux 사용을 권장합니다. Windows는 Windows Terminal 분할 기능을 사용합니다.)</span></p>
         <div class="code-block">
