@@ -383,7 +383,7 @@
     </div>
   </div>
 
-  <form id="study-form" onsubmit="return submitForm(event)">
+  <form id="study-form" onsubmit="return submitForm(event)" novalidate>
 
     <!-- 섹션 1: 기본 정보 -->
     <div class="section-card" data-section="1">
@@ -533,7 +533,7 @@
       <div class="form-group">
         <label class="form-label">향후 본인 업무에 AI를 적용해 볼 의향이 있으신가요? <span class="required">*</span></label>
         <div class="radio-group">
-          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_intent" value="적극적으로 적용하고 싶다" required>적극적으로 적용하고 싶다</label>
+          <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_intent" value="적극적으로 적용하고 싶다">적극적으로 적용하고 싶다</label>
           <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_intent" value="조건이 맞으면 적용해 보고 싶다">조건이 맞으면 적용해 보고 싶다</label>
           <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_intent" value="잘 모르겠다 / 추가 학습이 필요하다">잘 모르겠다 / 추가 학습이 필요하다</label>
           <label class="radio-item" onclick="selectRadio(this)"><input type="radio" name="ai_intent" value="별로 필요성을 느끼지 못한다">별로 필요성을 느끼지 못한다</label>
@@ -668,20 +668,32 @@
       e.preventDefault();
       const form = e.target;
 
+      if (!form.querySelector('input[name="name"]').value.trim()) { alert('이름을 입력해주세요.'); return false; }
+      if (!form.querySelector('input[name="ai_experience"]:checked')) { alert('AI 경험을 선택해주세요.'); return false; }
+
       const aiTools = form.querySelectorAll('input[name="ai_tools"]:checked');
       if (aiTools.length === 0) { alert('사용해 본 AI 도구를 선택해주세요.'); return false; }
+
+      if (!form.querySelector('input[name="ai_level"]:checked')) { alert('AI 활용 수준을 선택해주세요.'); return false; }
 
       const tasks = form.querySelectorAll('input[name="repetitive_tasks"]:checked');
       if (tasks.length === 0) { alert('반복 업무를 1개 이상 선택해주세요.'); return false; }
 
+      if (!form.querySelector('textarea[name="first_ai_use"]').value.trim()) { alert('AI로 해보고 싶은 업무를 입력해주세요.'); return false; }
+
       const concerns = form.querySelectorAll('input[name="concerns"]:checked');
       if (concerns.length === 0) { alert('우려 사항을 선택해주세요.'); return false; }
+
+      if (!form.querySelector('input[name="ai_intent"]:checked')) { alert('AI 적용 의향을 선택해주세요.'); return false; }
 
       const topics = form.querySelectorAll('input[name="topics"]:checked');
       if (topics.length === 0) { alert('듣고 싶은 주제를 선택해주세요.'); return false; }
 
       const days = form.querySelectorAll('input[name="day"]:checked');
       if (days.length === 0) { alert('희망 요일을 선택해주세요.'); return false; }
+
+      if (!form.querySelector('input[name="time"]:checked')) { alert('희망 시간대를 선택해주세요.'); return false; }
+      if (!form.querySelector('textarea[name="expectation"]').value.trim()) { alert('기대하는 바를 입력해주세요.'); return false; }
 
       const data = new FormData(form);
       const obj = {};
