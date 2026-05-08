@@ -709,7 +709,7 @@
       submitBtn.textContent = '제출 중...';
       submitBtn.disabled = true;
 
-      const scriptUrl = localStorage.getItem('study_script_url') || 'https://script.google.com/macros/s/AKfycbxszy2XHzaSHz2rJgoS-qDkbUmIBJZ0-WuorMthrbihIzsYql063Bjr4LD4KNCRceX62Q/exec';
+      const scriptUrl = localStorage.getItem('study_script_url') || 'https://script.google.com/macros/s/AKfycbymf9MuhljUlU26eM6-FypyLtmVN2MpUSe9YSUzyRgzJm9ngmz5hgXkFbujMhFvSAa8/exec';
       if (scriptUrl) {
         try {
           const res = await fetch(scriptUrl, {
