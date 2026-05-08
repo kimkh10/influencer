@@ -1,8 +1,10 @@
 const TARGET = 'https://api.store.friendly-pharmacist.com';
 const ALLOWED_ORIGINS = [
   'https://influencer-p68.pages.dev',
+  'http://localhost:8788',
   'http://localhost:3000',
   'http://localhost:8080',
+  'http://127.0.0.1:8788',
   'http://127.0.0.1:3000',
   'http://127.0.0.1:8080',
 ];

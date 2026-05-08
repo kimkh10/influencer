@@ -230,9 +230,10 @@ influencer/
   ← 응답 전달 (Access-Control-Allow-Origin: 화이트리스트 Origin 추가)
 ```
 
-**환경 분기**
-- 로컬(`localhost`): `API_BASE = 'https://api.store.friendly-pharmacist.com'` → 직접 호출
-- 배포(`pages.dev`): `API_BASE = ''` → `/api/...` 상대경로로 프록시 경유
+**환경 통합**
+- `API_BASE = ''` — 로컬/배포 모두 `/api/...` 상대경로로 프록시 경유
+- 로컬: `npx wrangler pages dev .` (포트 8788)로 Pages Functions 포함 실행
+- 배포: Cloudflare Pages Functions 자동 인식
 
 **구현**: OPTIONS preflight 204 응답, GET/POST/PUT/DELETE 전달, `host`/`origin`/`referer` 헤더 제거
 

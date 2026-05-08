@@ -633,12 +633,12 @@ html, body {
         <div class="step-label">Step 8 — cmux에서 서버 + Claude Code 동시 실행</div>
         <p>cmux를 열고, 화면을 분할하여 한쪽에서 서버를 띄우고 다른 쪽에서 Claude Code를 실행합니다.</p>
         <div class="code-block">
-          <span class="comment"># 패널 1: 로컬 서버 실행</span><br>
-          <span class="command">npx</span> serve .<br><br>
+          <span class="comment"># 패널 1: 로컬 서버 실행 (CORS 프록시 포함)</span><br>
+          <span class="command">npx</span> wrangler pages dev .<br><br>
           <span class="comment"># Cmd+D로 패널 분할 후, 패널 2: Claude Code 실행</span><br>
           <span class="command">claude</span>
         </div>
-        <p style="margin-top:8px;">브라우저에서 <code>http://localhost:3000</code> 접속하여 캘린더를 확인합니다.</p>
+        <p style="margin-top:8px;">브라우저에서 <code>http://localhost:8788</code> 접속하여 캘린더를 확인합니다.</p>
         <div class="tip"><strong>cmux 기본 조작:</strong><br>
         • 세로 분할: <code>Cmd + D</code><br>
         • 가로 분할: <code>Cmd + Shift + D</code><br>
@@ -656,11 +656,10 @@ html, body {
           <div class="terminal-body">
             <div class="terminal-pane">
               <div class="terminal-pane-label">Panel 1 — Local Server</div>
-              <span class="t-prompt">$ </span><span class="t-cmd">npx serve .</span><br><br>
-              <span class="t-info">  Serving!</span><br><br>
-              <span class="t-dim">  - Local:  </span><span class="t-cmd">http://localhost:3000</span><br>
-              <span class="t-dim">  - Network:</span><span class="t-cmd"> http://192.168.0.10:3000</span><br><br>
-              <span class="t-dim">  Copied local address to clipboard!</span>
+              <span class="t-prompt">$ </span><span class="t-cmd">npx wrangler pages dev .</span><br><br>
+              <span class="t-info">  Ready on</span> <span class="t-cmd">http://localhost:8788</span><br><br>
+              <span class="t-dim">  [mf:inf] Worker reloaded!</span><br>
+              <span class="t-dim">  [mf:inf] Listening on :8788</span>
             </div>
             <div class="terminal-pane">
               <div class="terminal-pane-label">Panel 2 — Claude Code</div>
@@ -759,11 +758,11 @@ html, body {
 
       <div class="step-card">
         <div class="step-label">Step 7 — 로컬 서버 실행</div>
-        <p>프로젝트를 브라우저에서 확인합니다.</p>
+        <p>프로젝트를 브라우저에서 확인합니다. CORS 프록시가 포함된 서버를 실행합니다.</p>
         <div class="code-block">
-          <span class="command">npx</span> serve .
+          <span class="command">npx</span> wrangler pages dev .
         </div>
-        <p style="margin-top:8px;">브라우저에서 <code>http://localhost:3000</code> 접속하여 확인합니다.</p>
+        <p style="margin-top:8px;">브라우저에서 <code>http://localhost:8788</code> 접속하여 확인합니다.</p>
         <div class="tip"><strong>방화벽 알림:</strong> Windows 보안 알림이 뜨면 "허용"을 클릭하세요.</div>
       </div>
 
@@ -795,7 +794,7 @@ html, body {
       <li><code>node --version</code> 실행 시 버전 번호가 출력된다</li>
       <li><code>git --version</code> 실행 시 버전 번호가 출력된다</li>
       <li><code>claude</code> 실행 시 Claude Code가 시작된다</li>
-      <li><code>http://localhost:3000</code> 접속 시 캘린더가 보인다</li>
+      <li><code>http://localhost:8788</code> 접속 시 캘린더가 보인다</li>
     </ul>
   </div>
 
@@ -869,7 +868,7 @@ html, body {
         <span class="comment"># Claude가 응답하면 다음과 같이 요청:</span><br>
         캘린더 테마 색상을 파란색 계열로 변경해줘
       </div>
-      <p style="margin-top:8px;">브라우저에서 <code>http://localhost:3000</code>을 새로고침하여 변경 사항을 확인합니다.</p>
+      <p style="margin-top:8px;">브라우저에서 <code>http://localhost:8788</code>을 새로고침하여 변경 사항을 확인합니다.</p>
       <div class="tip"><strong>동작 원리:</strong> 캘린더의 모든 색상은 CSS 변수(<code>--accent</code>, <code>--accent-hex</code>)로 관리됩니다. Claude는 이 변수값만 변경하여 전체 테마를 일괄 적용합니다.</div>
     </div>
 
@@ -904,7 +903,7 @@ html, body {
 
     <div class="result-preview">
       <div class="label">확인 방법</div>
-      <div class="url">http://localhost:3000 → 관리자 패널 열기 → 로그인 → 캘린더 확인 → "이미지 저장" 버튼 클릭</div>
+      <div class="url">http://localhost:8788 → 관리자 패널 열기 → 로그인 → 캘린더 확인 → "이미지 저장" 버튼 클릭</div>
     </div>
   </div>
 
@@ -977,7 +976,7 @@ html, body {
       <p>브라우저에서 대시보드에 접속하고 로그인합니다:</p>
       <div class="code-block">
         <span class="comment"># 브라우저에서 접속</span><br>
-        <span class="url">http://localhost:3000/dashboard</span><br><br>
+        <span class="url">http://localhost:8788/dashboard</span><br><br>
         <span class="comment"># 친한스토어 어드민 계정으로 로그인</span><br>
         <span class="comment"># master 계정은 슬랙 2FA 인증 필요</span>
       </div>
@@ -1017,7 +1016,7 @@ html, body {
 
     <div class="result-preview">
       <div class="label">확인 방법</div>
-      <div class="url">http://localhost:3000/dashboard → 로그인 → 공구 클릭 → 상세 매출 데이터 확인</div>
+      <div class="url">http://localhost:8788/dashboard → 로그인 → 공구 클릭 → 상세 매출 데이터 확인</div>
     </div>
 
     <div class="warning">
@@ -1069,7 +1068,7 @@ html, body {
       <p>관리자 페이지에서 데이터를 확인합니다:</p>
       <div class="code-block">
         <span class="comment"># 브라우저에서 접속</span><br>
-        <span class="url">http://localhost:3000/event-admin</span><br>
+        <span class="url">http://localhost:8788/event-admin</span><br>
         <span class="comment"># 로그인: admin / 1234</span>
       </div>
       <p style="margin-top:8px;">로그인 후 제출된 데이터를 테이블로 확인하고, 엑셀이나 CSV로 내보내기할 수 있습니다.</p>
@@ -1077,7 +1076,7 @@ html, body {
 
     <div class="result-preview">
       <div class="label">확인 방법</div>
-      <div class="url">http://localhost:3000/event → 폼 작성 → 제출 → event-admin에서 확인</div>
+      <div class="url">http://localhost:8788/event → 폼 작성 → 제출 → event-admin에서 확인</div>
     </div>
 
     <div class="tip">
