@@ -1626,7 +1626,7 @@
             ticks: {
               color: c.text,
               font: { size: 10, family: 'JetBrains Mono' },
-              callback: v => moneyMasked ? '' : (v >= 10000 ? Math.round(v / 10000) + '만' : v)
+              callback: v => moneyMasked ? '' : (v >= 100000000 ? (v / 100000000) + '억' : v >= 10000 ? Math.round(v / 10000) + '만' : v)
             },
             border: { color: 'transparent' }
           },

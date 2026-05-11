@@ -880,6 +880,26 @@
 
     function esc(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
+    async function loadSalesLinks() {
+      const BATCH = 5;
+      for (let i = 0; i < LOADED_PRODUCTS.length; i += BATCH) {
+        const batch = LOADED_PRODUCTS.slice(i, i + BATCH);
+        await Promise.all(batch.map(async (p) => {
+          try {
+            const res = await apiCall('/api/admin/v1/group-purchases/plans/' + p.id);
+            const plan = (res.data && res.data.group_purchase_plan) || res.data || res;
+            const site = plan.group_purchase_plan_service_site || {};
+            const url = site.group_purchase_plan_service_site_url || '';
+            if (url) p.salesLink = url;
+            console.log('[salesLink]', p.id, p.title, '→', url || '(없음)');
+          } catch(e) {
+            console.warn('[salesLink error]', p.id, e.message);
+          }
+        }));
+        renderForCurrentMonth();
+      }
+    }
+
     async function loadAndRender() {
       if (!bearerToken) { showGuide(); return; }
       try {
@@ -908,6 +928,7 @@
           };
         });
         renderForCurrentMonth();
+        loadSalesLinks();
       } catch(e) {
         if (e.message === '토큰 만료' || e.message === '인증 실패') {
           showGuide();

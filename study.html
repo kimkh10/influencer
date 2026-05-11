@@ -396,6 +396,13 @@
       </div>
 
       <div class="form-group">
+        <label class="form-label">GitHub 계정 <span class="required">*</span>
+          <span class="hint">실습에 사용할 GitHub 아이디를 입력해주세요</span>
+        </label>
+        <input type="text" class="form-input" name="github" placeholder="예: kimkh10" required />
+      </div>
+
+      <div class="form-group">
         <label class="form-label">주로 사용하는 장비 <span class="required">*</span>
           <span class="hint">(복수 선택 가능)</span>
         </label>
@@ -604,6 +611,7 @@
       const form = e.target;
 
       if (!form.querySelector('input[name="name"]').value.trim()) { alert('이름을 입력해주세요.'); return false; }
+      if (!form.querySelector('input[name="github"]').value.trim()) { alert('GitHub 계정을 입력해주세요.'); return false; }
       if (!form.querySelector('input[name="ai_experience"]:checked')) { alert('AI 경험을 선택해주세요.'); return false; }
 
       const aiTools = form.querySelectorAll('input[name="ai_tools"]:checked');
