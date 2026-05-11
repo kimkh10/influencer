@@ -463,6 +463,37 @@
 
     .toolbar input:focus { border-color: var(--teal); }
 
+    .date-filter {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .date-filter input[type="date"] {
+      padding: 5px 8px;
+      border: 0.5px solid var(--border-md);
+      border-radius: var(--radius-md);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      outline: none;
+    }
+    .date-filter input[type="date"]:focus { border-color: var(--teal); }
+    .date-filter span { font-size: 11px; color: var(--text-tertiary); }
+    .date-filter button {
+      padding: 5px 10px;
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 11px;
+      cursor: pointer;
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      transition: all 0.15s;
+    }
+    .date-filter button:hover { border-color: var(--teal); color: var(--teal); }
+
     .filter-btns { display: flex; gap: 4px; }
 
     .filter-btn {
@@ -933,7 +964,7 @@
     <div class="header">
       <div>
         <div class="header-title">파마브로스 공동구매 매출 대시보드</div>
-        <div class="header-sub" id="ts"></div>
+        <div class="header-sub"><span id="ts"></span> &nbsp;·&nbsp; <span id="data-range" style="color:var(--teal)"></span></div>
       </div>
       <div class="header-actions">
         <span class="badge badge-teal" id="badge-status"><span class="pulse"></span> 연결됨</span>
@@ -995,12 +1026,18 @@
         <input type="text" id="search-input" placeholder="공구명, 상품명, 셀러명 검색..." oninput="handleSearch()" />
         <span class="stats-inline" id="stats-inline"></span>
       </div>
+      <div class="date-filter">
+        <input type="date" id="date-from" onchange="applyDateFilter()">
+        <span>~</span>
+        <input type="date" id="date-to" onchange="applyDateFilter()">
+        <button onclick="clearDateFilter()">초기화</button>
+      </div>
       <div class="filter-btns">
         <button class="filter-btn active" data-filter="all" onclick="handleFilter('all')">전체</button>
-        <button class="filter-btn" data-filter="active" onclick="handleFilter('active')">진행중</button>
-        <button class="filter-btn" data-filter="upcoming" onclick="handleFilter('upcoming')">진행예정</button>
-        <button class="filter-btn" data-filter="completed" onclick="handleFilter('completed')">완료</button>
-        <button class="filter-btn" data-filter="cancelled" onclick="handleFilter('cancelled')">취소/보류</button>
+        <button class="filter-btn" data-filter="active" onclick="handleFilter('active')">공구중</button>
+        <button class="filter-btn" data-filter="upcoming" onclick="handleFilter('upcoming')">공구예정</button>
+        <button class="filter-btn" data-filter="completed" onclick="handleFilter('completed')">공구종료</button>
+        <button class="filter-btn" data-filter="cancelled" onclick="handleFilter('cancelled')">공구취소</button>
       </div>
     </div>
 
@@ -1065,6 +1102,34 @@
     renderTable();
     renderPlanChartJS();
   };
+
+  window.applyDateFilter = function() {
+    renderTable();
+    renderStats();
+    renderPlanChartJS();
+  };
+
+  window.clearDateFilter = function() {
+    document.getElementById('date-from').value = '';
+    document.getElementById('date-to').value = '';
+    renderTable();
+    renderStats();
+    renderPlanChartJS();
+  };
+
+  function getDateFiltered(plans) {
+    const from = document.getElementById('date-from').value;
+    const to = document.getElementById('date-to').value;
+    if (!from && !to) return plans;
+    return plans.filter(p => {
+      const start = (p.startDate || '').slice(0, 10);
+      const end = (p.endDate || '').slice(0, 10);
+      if (!start) return false;
+      if (from && end && end < from) return false;
+      if (to && start > to) return false;
+      return true;
+    });
+  }
 
   function formatCurrency(n) {
     if (n == null || isNaN(n)) return '-';
@@ -1370,17 +1435,12 @@
 
   // 진행상태 코드 매핑
   const STEP_LABELS = {
-    T0: '검토중', T2: '준비중', T4: '확정', T6: '진행중', T8: '진행완료',
-    Y0: '정산대기', Y8: '정산완료', C0: '취소', C4: '보류'
+    T0: '공구예정', T2: '공구예정', T4: '공구예정', T6: '공구예정', T8: '공구예정',
+    Y0: '공구중', Y8: '공구종료', C0: '공구취소', C4: '공구취소'
   };
 
   function getStepLabel(code) { return STEP_LABELS[code] || code || '-'; }
 
-  function isDateActive(startDate, endDate) {
-    if (!startDate || !endDate) return false;
-    const today = new Date().toISOString().slice(0, 10);
-    return today >= startDate.slice(0, 10) && today <= endDate.slice(0, 10);
-  }
   function isActiveStep(code) { return code === 'Y0'; }
   function isCompletedStep(code) { return code === 'Y8'; }
   function isUpcomingStep(code) { return ['T0','T2','T4','T6','T8'].includes(code); }
@@ -1422,8 +1482,27 @@
 
       renderAll();
       showToast(cachedPlans.length + '개 공구 데이터를 불러왔습니다.');
+
+      loadSalesInBackground();
     } catch (e) {
       showError('데이터 로드 실패: ' + e.message);
+    }
+  }
+
+  async function loadSalesInBackground() {
+    const targets = cachedPlans.filter(p => p.stepCode === 'Y0' && !p.totalSales);
+    const BATCH = 5;
+    for (let i = 0; i < targets.length; i += BATCH) {
+      const batch = targets.slice(i, i + BATCH);
+      await Promise.all(batch.map(async (plan) => {
+        try {
+          const detail = await fetchPlanDetail(plan.id);
+          const report = detail.group_purchase_plan_report_sale || {};
+          const sales = report.normal_order_amount_total || detail.total_order_amount || 0;
+          if (sales > 0) plan.totalSales = sales;
+        } catch (e) {}
+      }));
+      renderAll();
     }
   }
 
@@ -1440,7 +1519,7 @@
       endDate: raw.end_date || '',
       stepCode: stepCode,
       stepLabel: getStepLabel(stepCode),
-      isActive: isDateActive(raw.start_date, raw.end_date),
+      isActive: isActiveStep(stepCode),
       exposeYn: raw.expose_yn || 'N',
       influencerName: raw.influencer_name || '',
       pharmacyName: raw.pharmacy_name || '',
@@ -1466,7 +1545,7 @@
   }
 
   function renderStats() {
-    const plans = cachedPlans;
+    const plans = getDateFiltered(cachedPlans);
     const active = plans.filter(p => p.isActive).length;
     const totalSales = plans.reduce((s, p) => s + p.totalSales, 0);
     const uniqueInfluencers = new Set(plans.map(p => p.influencerName).filter(Boolean)).size;
@@ -1479,6 +1558,13 @@
       : (totalSales > 0
         ? (totalSales >= 100000000 ? Math.round(totalSales / 100000000 * 10) / 10 + '억' : Math.round(totalSales / 10000).toLocaleString() + '만')
         : '—');
+
+    const dates = plans.map(p => p.startDate).filter(Boolean).sort();
+    const endDates = plans.map(p => p.endDate).filter(Boolean).sort();
+    const earliest = dates.length ? dates[0].slice(0, 10) : '';
+    const latest = endDates.length ? endDates[endDates.length - 1].slice(0, 10) : '';
+    const rangeEl = document.getElementById('data-range');
+    if (rangeEl) rangeEl.textContent = earliest && latest ? earliest + ' ~ ' + latest : '';
   }
 
   function getChartColors() {
@@ -1496,7 +1582,7 @@
 
   function renderPlanChartJS() {
     const canvas = document.getElementById('chart-plans');
-    const data = cachedPlans.filter(p => p.totalSales > 0)
+    const data = getDateFiltered(cachedPlans).filter(p => p.totalSales > 0)
       .slice().sort((a, b) => b.totalSales - a.totalSales).slice(0, 10);
     const c = getChartColors();
 
@@ -1574,7 +1660,7 @@
     if (commissionChart) commissionChart.destroy();
 
     const counts = {};
-    cachedPlans.forEach(p => {
+    getDateFiltered(cachedPlans).forEach(p => {
       const code = p.stepCode || '??';
       counts[code] = (counts[code] || 0) + 1;
     });
@@ -1624,14 +1710,14 @@
   }
 
   function getFiltered() {
-    let result = [...cachedPlans];
+    let result = getDateFiltered([...cachedPlans]);
 
     if (currentFilter === 'active') {
-      result = result.filter(p => p.isActive);
+      result = result.filter(p => p.stepCode === 'Y0');
     } else if (currentFilter === 'completed') {
-      result = result.filter(p => !p.isActive && ['T8','Y0','Y8'].includes(p.stepCode));
+      result = result.filter(p => p.stepCode === 'Y8');
     } else if (currentFilter === 'upcoming') {
-      result = result.filter(p => !p.isActive && ['T0','T2','T4','T6'].includes(p.stepCode));
+      result = result.filter(p => ['T0','T2','T4','T6','T8'].includes(p.stepCode));
     } else if (currentFilter === 'cancelled') {
       result = result.filter(p => ['C0','C4'].includes(p.stepCode));
     }
