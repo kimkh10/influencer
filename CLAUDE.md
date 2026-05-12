@@ -18,6 +18,7 @@ influencer/
 ├── event-admin.html          ← 이벤트 당첨자 관리자 대시보드
 ├── study.html                ← AI 스터디 신청 폼
 ├── study-admin.html          ← 스터디 관리자 대시보드
+├── study-raffle.html         ← 스터디 그룹 추첨 룰렛
 ├── study-curriculum.html     ← 스터디 커리큘럼 안내 페이지
 ├── study-skills-practice.html← 스킬 실습 가이드 (수업 자료)
 ├── dashboard.html            ← 공구 매출 대시보드 (API 직접 호출)
@@ -68,6 +69,13 @@ influencer/
 - 스터디 신청자 목록 조회 및 관리
 - Apps Script 코드 템플릿 제공
 - 설정 탭에서 Apps Script URL 관리
+
+### study-raffle.html (그룹 추첨 룰렛)
+- 신청자를 2개 스터디 그룹(A/B)으로 나누는 룰렛 추첨 페이지
+- localStorage(`study_submissions`)에서 신청자 자동 로드, 또는 직접 명단 입력
+- SVG 기반 룰렛 회전 애니메이션 (5~6바퀴 cubic-bezier ease-out)
+- 화살표가 가리키는 사람을 A/B에 번갈아 배정 (배정 후 룰렛에서 제거)
+- 결과를 PNG 저장 / 클립보드 복사 가능
 
 ### study-curriculum.html (커리큘럼 페이지)
 - 4주 AI 스터디 커리큘럼 안내
