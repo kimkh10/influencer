@@ -648,9 +648,12 @@ html, body {
 
       <div class="step-card">
         <div class="step-label">Step 8 — Wrangler 설치</div>
-        <p>로컬에서 CORS 프록시를 포함한 개발 서버를 실행하려면 Cloudflare의 <strong>Wrangler</strong> CLI가 필요합니다.</p>
+        <p>먼저 프로젝트 의존성을 설치한 다음, Cloudflare의 <strong>Wrangler</strong> CLI 를 설치합니다.</p>
         <div class="code-block">
+          <span class="command">npm</span> install<br>
+          <span class="comment"># package.json 의 devDependencies (wrangler 포함) 설치</span><br><br>
           <span class="command">npm</span> install <span class="flag">-g</span> wrangler
+          <span class="comment"># (선택) 글로벌 설치 — npx 없이 wrangler 직접 사용 가능</span>
         </div>
         <div class="tip"><strong>Wrangler란?</strong> Cloudflare Pages/Workers 로컬 개발 및 배포 도구입니다. <code>npx serve .</code>와 달리 CORS 프록시(<code>functions/api/</code>)까지 로컬에서 실행해줍니다.</div>
       </div>
@@ -832,9 +835,12 @@ html, body {
 
       <div class="step-card">
         <div class="step-label">Step 7 — Wrangler 설치</div>
-        <p>로컬에서 CORS 프록시를 포함한 개발 서버를 실행하려면 Cloudflare의 <strong>Wrangler</strong> CLI가 필요합니다.</p>
+        <p>먼저 프로젝트 의존성을 설치한 다음, Cloudflare의 <strong>Wrangler</strong> CLI 를 설치합니다.</p>
         <div class="code-block">
+          <span class="command">npm</span> install<br>
+          <span class="comment"># package.json 의 devDependencies (wrangler 포함) 설치</span><br><br>
           <span class="command">npm</span> install <span class="flag">-g</span> wrangler
+          <span class="comment"># (선택) 글로벌 설치 — npx 없이 wrangler 직접 사용 가능</span>
         </div>
         <div class="tip"><strong>Wrangler란?</strong> Cloudflare Pages/Workers 로컬 개발 및 배포 도구입니다. <code>npx serve .</code>와 달리 CORS 프록시(<code>functions/api/</code>)까지 로컬에서 실행해줍니다.</div>
       </div>
@@ -1259,9 +1265,12 @@ html, body {
 
     <div class="step-card">
       <div class="step-label">Step 1 — Wrangler 설치</div>
-      <p>Cloudflare 배포 도구를 설치합니다:</p>
+      <p>먼저 의존성을 설치한 다음 Cloudflare 배포 도구를 설치합니다:</p>
       <div class="code-block">
+        <span class="command">npm</span> install
+        <span class="comment"># package.json 의 의존성 설치 (wrangler 포함)</span><br><br>
         <span class="command">npm</span> install <span class="flag">-g</span> wrangler
+        <span class="comment"># (선택) 글로벌 wrangler — 배포 명령을 더 짧게 쓸 수 있음</span>
       </div>
     </div>
 
