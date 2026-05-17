@@ -1042,6 +1042,63 @@
     .pv-brand-empty {
       text-align: center; padding: 24px 0; color: #6e7681; font-size: 13px;
     }
+
+    /* === Active Plans Panel === */
+    .active-plans-section {
+      margin-bottom: 20px;
+    }
+    .active-plans-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .active-plans-title {
+      font-size: 14px; font-weight: 600; color: #c9d1d9;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .active-plans-title::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--teal); box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.12);
+    }
+    .active-plans-count {
+      font-size: 12px; color: #8b949e;
+    }
+    .active-plans-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .active-plan-card {
+      background: #161b22; border: 1px solid #1f2530;
+      border-radius: 10px; padding: 12px;
+      cursor: pointer; transition: border-color 0.15s, transform 0.15s;
+      display: flex; gap: 12px;
+    }
+    .active-plan-card:hover {
+      border-color: var(--teal); transform: translateY(-1px);
+    }
+    .active-plan-thumb {
+      width: 56px; height: 56px; flex-shrink: 0;
+      object-fit: cover; border-radius: 8px; background: #1f2530;
+    }
+    .active-plan-body { min-width: 0; flex: 1; }
+    .active-plan-title {
+      font-size: 13px; font-weight: 600; color: #fff;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .active-plan-meta {
+      font-size: 11px; color: #8b949e; margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .active-plan-foot {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-top: 6px; font-size: 11px;
+    }
+    .active-plan-dday { color: var(--teal); font-weight: 600; }
+    .active-plan-sales { color: #c9d1d9; font-variant-numeric: tabular-nums; }
+    .active-plans-empty {
+      text-align: center; padding: 30px 12px;
+      color: #6e7681; font-size: 13px;
+      background: #161b22; border: 1px dashed #30363d; border-radius: 10px;
+    }
   </style>
 </head>
 <body>
@@ -1226,6 +1283,15 @@
         <button class="btn-sm" onclick="exportCSV()">CSV</button>
         <button class="btn-sm danger" onclick="disconnectToken()">로그아웃</button>
       </div>
+    </div>
+
+    <!-- Active Plans Panel -->
+    <div class="active-plans-section">
+      <div class="active-plans-header">
+        <div class="active-plans-title">진행 중인 공구</div>
+        <div class="active-plans-count" id="active-plans-count">—</div>
+      </div>
+      <div class="active-plans-grid" id="active-plans-grid"></div>
     </div>
 
     <!-- Metrics -->
@@ -2595,12 +2661,62 @@
     return result;
   }
 
+  function pvDdayText(endDate) {
+    if (!endDate) return '';
+    try {
+      const end = new Date(endDate);
+      const now = new Date();
+      end.setHours(23, 59, 59, 999);
+      const diff = end - now;
+      if (diff < 0) return '종료';
+      const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+      if (days === 0) return '오늘 마감';
+      return 'D-' + days;
+    } catch (e) { return ''; }
+  }
+
+  function renderActivePlans() {
+    const grid = document.getElementById('active-plans-grid');
+    const countEl = document.getElementById('active-plans-count');
+    if (!grid || !countEl) return;
+
+    const active = Array.isArray(cachedPlans)
+      ? cachedPlans.filter(p => p && p.isActive)
+      : [];
+
+    countEl.textContent = active.length > 0 ? (active.length + '건') : '없음';
+
+    if (active.length === 0) {
+      grid.innerHTML = '<div class="active-plans-empty">현재 진행 중인 공구가 없습니다.</div>';
+      return;
+    }
+
+    grid.innerHTML = active.map(p => {
+      const dday = pvDdayText(p.endDate);
+      const sales = moneyMasked ? '***' : formatCurrency(p.totalSales || 0);
+      return '' +
+        '<div class="active-plan-card" onclick="openDetail(' + Number(p.id) + ')">' +
+          '<img class="active-plan-thumb" src="' + esc(p.imageUrl || '') + '" alt="" onerror="this.style.visibility=\'hidden\'">' +
+          '<div class="active-plan-body">' +
+            '<div class="active-plan-title">' + esc(p.title || '') + '</div>' +
+            '<div class="active-plan-meta">' + esc(p.brand || '') + '</div>' +
+            '<div class="active-plan-foot">' +
+              '<span class="active-plan-dday">' + esc(dday) + '</span>' +
+              '<span class="active-plan-sales">' + esc(sales) + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }).join('');
+  }
+
   function renderTable() {
     const filtered = getFiltered();
     const area = document.getElementById('table-area');
 
     document.getElementById('stats-inline').innerHTML =
       '조회 <strong>' + filtered.length + '</strong>건';
+
+    renderActivePlans();
 
     if (filtered.length === 0) {
       area.innerHTML = '<div class="empty-state">' +
