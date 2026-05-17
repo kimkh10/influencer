@@ -932,6 +932,12 @@
     /* === Products View === */
     .pv-wrap { padding: 24px 28px; }
     .pv-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; color: #fff; }
+    .pv-title-row {
+      display: flex; align-items: baseline; gap: 12px;
+      justify-content: space-between; margin-bottom: 16px;
+    }
+    .pv-title-row .pv-title { margin-bottom: 0; }
+    .pv-stat-top { font-size: 13px; color: #8b949e; }
     .pv-filters {
       display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center;
       padding: 14px 16px; background: #161b22; border: 1px solid #1f2530;
@@ -965,7 +971,7 @@
     .pv-badge.ok { background: rgba(45, 212, 191, 0.15); color: #2dd4bf; }
     .pv-badge.ng { background: rgba(248, 113, 113, 0.15); color: #f87171; }
     .pv-pagination {
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex; justify-content: center; align-items: center;
       margin-top: 16px; padding: 12px 4px; font-size: 13px; color: #8b949e;
     }
     .pv-pagination button {
@@ -1082,7 +1088,7 @@
         <span class="icon">📦</span><span>제품 구좌</span>
       </a>
       <a class="sidebar-item" href="#sellers" data-view="sellers">
-        <span class="icon">🏷️</span><span>셀러</span><span class="wip">WIP</span>
+        <span class="icon">🏷️</span><span>파트너</span><span class="wip">WIP</span>
       </a>
       <a class="sidebar-item" href="#sales" data-view="sales">
         <span class="icon">💰</span><span>매출</span><span class="wip">WIP</span>
@@ -1226,7 +1232,10 @@
       </section>
       <section class="view" id="view-products">
         <div class="pv-wrap">
-          <div class="pv-title">제품 구좌</div>
+          <div class="pv-title-row">
+            <div class="pv-title">제품 구좌</div>
+            <span class="pv-stat-top" id="pv-stat">—</span>
+          </div>
 
           <div class="pv-filters">
             <div class="field-inline">
@@ -1269,7 +1278,7 @@
                   <th style="width:64px"></th>
                   <th>제품</th>
                   <th>약국</th>
-                  <th>셀러</th>
+                  <th>파트너</th>
                   <th>직전 공구</th>
                   <th>다음 공구</th>
                   <th>상태</th>
@@ -1280,18 +1289,15 @@
           </div>
 
           <div class="pv-pagination">
-            <span id="pv-stat">—</span>
-            <span>
-              <button id="pv-prev" disabled>이전</button>
-              <span id="pv-page-info" style="margin: 0 12px;">1 / 1</span>
-              <button id="pv-next" disabled>다음</button>
-            </span>
+            <button id="pv-prev" disabled>이전</button>
+            <span id="pv-page-info" style="margin: 0 12px;">1 / 1</span>
+            <button id="pv-next" disabled>다음</button>
           </div>
         </div>
       </section>
       <section class="view" id="view-sellers">
         <div class="view-placeholder">
-          <h2>셀러</h2>
+          <h2>파트너</h2>
           <p>이 메뉴는 준비 중입니다.</p>
         </div>
       </section>
