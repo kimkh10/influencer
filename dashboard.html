@@ -1566,11 +1566,85 @@
     dashboard: function initDashboardView() {
       // 기존 dashboard 콘텐츠는 항상 로드되어 있음
     },
-    products: function initProductsView() { /* Task 4-6 에서 채움 */ },
+    products: (function() {
+      let bound = false;
+      return function initProductsView() {
+        if (!bound) {
+          // Task 6 에서 bindProductsFilters() 호출 추가됨
+          bound = true;
+        }
+        fetchProducts();
+      };
+    })(),
     sellers: function initPlaceholderView() {},
     sales: function initPlaceholderView() {},
     customers: function initPlaceholderView() {},
   };
+
+  // === Products View ===
+  const productsState = {
+    keyword: '',
+    available: 'true',          // '' (전체) | 'true' | 'false' — 라디오 value
+    isExpired: false,
+    sortType: 'LAST_PLAN_ASC',
+    page: 0,
+    size: 20,
+    data: null,                  // 마지막 응답 { meta, data }
+    loading: false,
+    error: null,                 // 'auth' | 'network' | null
+  };
+
+  function buildProductsQuery() {
+    const p = new URLSearchParams();
+    if (productsState.keyword.trim()) p.set('keyword', productsState.keyword.trim());
+    if (productsState.available === 'true' || productsState.available === 'false') {
+      p.set('availableGroupPurchaseProduct', productsState.available);
+    }
+    p.set('isExpired', productsState.isExpired ? 'true' : 'false');
+    p.set('sortType', productsState.sortType);
+    p.set('page', String(productsState.page));
+    p.set('size', String(productsState.size));
+    return p.toString();
+  }
+
+  async function fetchProducts() {
+    productsState.loading = true;
+    productsState.error = null;
+    renderProductsView();
+    try {
+      const qs = buildProductsQuery();
+      const res = await fetch(API_BASE + '/api/admin/v2/group-purchases/product-influencers?' + qs, {
+        headers: { 'accept': 'application/json', 'Authorization': 'Bearer ' + bearerToken },
+      });
+      if (res.status === 401 || res.status === 403) {
+        productsState.error = 'auth';
+        productsState.loading = false;
+        renderProductsView();
+        showToast('인증이 만료되었습니다. 다시 로그인해주세요.');
+        disconnectToken();
+        return;
+      }
+      if (!res.ok) {
+        productsState.error = 'network';
+        productsState.loading = false;
+        renderProductsView();
+        return;
+      }
+      const json = await res.json();
+      productsState.data = json;
+      productsState.loading = false;
+      renderProductsView();
+    } catch (e) {
+      productsState.error = 'network';
+      productsState.loading = false;
+      renderProductsView();
+    }
+  }
+
+  // 임시 renderProductsView — Task 5에서 진짜 구현으로 교체됨
+  function renderProductsView() {
+    console.log('[products]', { ...productsState });
+  }
 
   function showView(name) {
     if (!VALID_VIEWS.includes(name)) name = 'dashboard';
