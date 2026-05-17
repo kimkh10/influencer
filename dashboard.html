@@ -1111,6 +1111,15 @@
     }
     .ig-handle-btn:hover { border-color: var(--teal); color: #fff; }
 
+    .contents-summary-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 14px; padding: 12px 0 8px;
+      border-bottom: 1px solid #1f2530; margin-bottom: 14px;
+    }
+    .cs-label { font-size: 11px; color: #8b949e; margin-bottom: 4px; }
+    .cs-value { font-size: 18px; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
+    .cs-fetched { font-size: 11px; color: #8b949e; margin-top: -8px; margin-bottom: 12px; text-align: right; }
+
     /* === Active Plans Panel === */
     .active-plans-section {
       margin-bottom: 20px;
@@ -1758,9 +1767,18 @@
         </div>
       </section>
       <section class="view" id="view-contents">
-        <div class="view-placeholder">
-          <h2>컨텐츠</h2>
-          <p>이 메뉴는 준비 중입니다.</p>
+        <div class="dash-card">
+          <div class="ig-panel-header">
+            <div class="ig-panel-title">컨텐츠 (인스타)</div>
+            <div>
+              <span class="ig-panel-meta" id="contents-meta">핸들 미설정</span>
+              <button class="ig-handle-btn" id="contents-handle-btn" type="button" style="margin-left:8px">📷 핸들/토큰 설정</button>
+            </div>
+          </div>
+          <div id="contents-summary"></div>
+          <div id="contents-grid-wrap">
+            <div class="ig-empty">인스타 핸들과 토큰을 설정하면 컨텐츠가 표시됩니다.</div>
+          </div>
         </div>
       </section>
     </main>
@@ -2059,17 +2077,42 @@
     consult: function initPlaceholderView() {},
     staff: function initPlaceholderView() {},
     attendance: function initPlaceholderView() {},
-    contents: function initPlaceholderView() {},
+    contents: function initContentsView() {
+      // Always re-render — if user just updated handle/token elsewhere, reflect it
+      renderContentsView();
+      // 핸들/토큰 있고 캐시된 posts 가 없으면 자동 fetch
+      if (instagramState.handle && instagramState.token && !instagramState.posts) {
+        fetchInstagramContent();
+      }
+    },
   };
 
   // === Instagram Content ===
-  const IG_HANDLE_KEY = 'dashboard_instagram_handle';
+  const IG_TOKEN_KEY = 'apify_demo_token';
+  const IG_HANDLE_KEY = 'apify_demo_handle';
+  const IG_POSTS_KEY = 'apify_demo_posts';
+
   const instagramState = {
+    token: localStorage.getItem(IG_TOKEN_KEY) || '',
     handle: localStorage.getItem(IG_HANDLE_KEY) || '',
     loading: false,
     error: null,
     posts: null,
+    fetchedAt: null,
   };
+
+  // 페이지 로드 시 캐시된 posts 복원
+  (function restoreInstagramCache() {
+    try {
+      const raw = localStorage.getItem(IG_POSTS_KEY);
+      if (!raw) return;
+      const cached = JSON.parse(raw);
+      if (cached && Array.isArray(cached.posts)) {
+        instagramState.posts = cached.posts;
+        instagramState.fetchedAt = cached.fetchedAt || null;
+      }
+    } catch (e) {}
+  })();
 
   function igEsc(s) { return esc(s == null ? '' : String(s)); }
 
@@ -2148,46 +2191,150 @@
     if (viewsEl) viewsEl.textContent = posts ? igFormatCount(igSumViews(posts)) : '—';
   }
 
+  function renderContentsView() {
+    const meta = document.getElementById('contents-meta');
+    const summary = document.getElementById('contents-summary');
+    const wrap = document.getElementById('contents-grid-wrap');
+    if (!meta || !summary || !wrap) return;
+
+    if (!instagramState.handle) {
+      meta.textContent = '핸들 미설정';
+      summary.innerHTML = '';
+      wrap.innerHTML = '<div class="ig-empty">인스타 핸들과 토큰을 설정하면 컨텐츠가 표시됩니다.</div>';
+      return;
+    }
+    meta.textContent = '@' + instagramState.handle;
+
+    if (instagramState.loading) {
+      summary.innerHTML = '';
+      wrap.innerHTML = '<div class="ig-loading">불러오는 중...</div>';
+      return;
+    }
+    if (instagramState.error) {
+      summary.innerHTML = '';
+      wrap.innerHTML = `<div class="ig-error">${igEsc(instagramState.error)}</div>`;
+      return;
+    }
+
+    const posts = instagramState.posts || [];
+    if (posts.length === 0) {
+      summary.innerHTML = '';
+      wrap.innerHTML = '<div class="ig-empty">표시할 포스트가 없습니다.</div>';
+      return;
+    }
+
+    // Summary
+    const likes = posts.reduce((s, p) => s + (p.likesCount || 0), 0);
+    const comments = posts.reduce((s, p) => s + (p.commentsCount || 0), 0);
+    const views = posts.reduce((s, p) => s + (p.videoViewCount || 0), 0);
+    const fetchedStr = instagramState.fetchedAt ? new Date(instagramState.fetchedAt).toLocaleString('ko-KR') : '-';
+    summary.innerHTML = `
+      <div class="contents-summary-grid">
+        <div><div class="cs-label">총 포스트</div><div class="cs-value">${posts.length}</div></div>
+        <div><div class="cs-label">좋아요 합</div><div class="cs-value">${igFormatCount(likes)}</div></div>
+        <div><div class="cs-label">댓글 합</div><div class="cs-value">${igFormatCount(comments)}</div></div>
+        ${views > 0 ? `<div><div class="cs-label">조회 합</div><div class="cs-value">${igFormatCount(views)}</div></div>` : ''}
+      </div>
+      <div class="cs-fetched">가져온 시각: ${igEsc(fetchedStr)}</div>
+    `;
+
+    // Grid (show more than dashboard panel — up to 30)
+    wrap.innerHTML = '<div class="ig-grid">' + posts.slice(0, 30).map(p => {
+      const date = p.timestamp ? new Date(p.timestamp).toISOString().slice(0, 10) : '';
+      const type = p.type === 'Video' ? '🎬 비디오' :
+                   p.type === 'Sidecar' ? '🖼️ 다중' :
+                   p.type === 'Image' ? '📷 이미지' :
+                   p.productType === 'clips' ? '🎞️ 릴스' : '';
+      const url = p.url || (p.shortCode ? 'https://www.instagram.com/p/' + p.shortCode + '/' : '#');
+      return `
+        <a class="ig-card" href="${igEsc(url)}" target="_blank" rel="noopener">
+          <img class="ig-card-thumb" src="${igEsc(p.displayUrl || '')}" alt="" onerror="this.style.visibility='hidden'">
+          <div class="ig-card-body">
+            <div style="display:flex; justify-content:space-between; font-size:10px; color:#8b949e; margin-bottom:4px;">
+              <span>${igEsc(type)}</span><span>${igEsc(date)}</span>
+            </div>
+            <div class="ig-card-caption">${igEsc((p.caption || '').slice(0, 120))}</div>
+            <div class="ig-card-stats">
+              <span class="stat">❤️ ${igFormatCount(p.likesCount)}</span>
+              <span class="stat">💬 ${igFormatCount(p.commentsCount)}</span>
+              ${p.videoViewCount ? `<span class="stat">▶️ ${igFormatCount(p.videoViewCount)}</span>` : ''}
+            </div>
+          </div>
+        </a>
+      `;
+    }).join('') + '</div>';
+  }
+
   async function fetchInstagramContent() {
     if (!instagramState.handle) {
       renderInstagramPanel();
+      renderContentsView();
+      return;
+    }
+    if (!instagramState.token) {
+      instagramState.error = 'Apify 토큰이 없습니다. apify-demo.html 에서 먼저 설정해주세요.';
+      renderInstagramPanel();
+      renderContentsView();
       return;
     }
     instagramState.loading = true;
     instagramState.error = null;
     renderInstagramPanel();
+    renderContentsView();
     try {
-      const qs = new URLSearchParams({ username: instagramState.handle }).toString();
-      const res = await fetch(API_BASE + '/api/apify/instagram?' + qs, {
-        headers: { 'accept': 'application/json' },
+      const endpoint = 'https://api.apify.com/v2/acts/apify~instagram-scraper'
+        + '/run-sync-get-dataset-items?token=' + encodeURIComponent(instagramState.token);
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          directUrls: ['https://www.instagram.com/' + instagramState.handle + '/'],
+          resultsLimit: 30,
+        }),
       });
       if (!res.ok) {
-        const j = await res.json().catch(() => ({}));
-        throw new Error(j.error || `오류 ${res.status}`);
+        const text = await res.text().catch(() => '');
+        throw new Error('HTTP ' + res.status + ' — ' + text.slice(0, 100));
       }
-      const json = await res.json();
-      instagramState.posts = Array.isArray(json.posts) ? json.posts : [];
+      const raw = await res.json();
+      const posts = Array.isArray(raw) ? raw : (raw.posts || raw.data || []);
+      const fetchedAt = Date.now();
+      instagramState.posts = posts;
+      instagramState.fetchedAt = fetchedAt;
       instagramState.loading = false;
+      try {
+        localStorage.setItem(IG_POSTS_KEY, JSON.stringify({ posts, fetchedAt, handle: instagramState.handle }));
+      } catch (e) {}
       renderInstagramPanel();
+      renderContentsView();
     } catch (e) {
       instagramState.loading = false;
-      instagramState.error = '인스타 포스트를 불러오지 못했습니다. (APIFY_TOKEN 설정 확인)';
+      instagramState.error = e.message || '인스타 포스트를 불러오지 못했습니다.';
       renderInstagramPanel();
+      renderContentsView();
     }
   }
 
   function promptInstagramHandle() {
-    const cur = instagramState.handle || '';
-    const input = prompt('인스타 핸들을 입력하세요 (예: ydy_nutrition). @ 빼고 입력.', cur);
-    if (input === null) return;  // cancelled
-    const cleaned = input.trim().replace(/^@/, '');
-    if (cleaned && !/^[A-Za-z0-9._]{1,30}$/.test(cleaned)) {
+    const curHandle = instagramState.handle || '';
+    const curToken = instagramState.token || '';
+
+    const newHandle = prompt('인스타 핸들 (@ 빼고 입력):', curHandle);
+    if (newHandle === null) return;
+    const cleanedHandle = newHandle.trim().replace(/^@/, '');
+    if (cleanedHandle && !/^[A-Za-z0-9._]{1,30}$/.test(cleanedHandle)) {
       showToast('올바른 인스타 핸들 형식이 아닙니다.');
       return;
     }
-    instagramState.handle = cleaned;
-    if (cleaned) localStorage.setItem(IG_HANDLE_KEY, cleaned);
-    else localStorage.removeItem(IG_HANDLE_KEY);
+
+    const newToken = prompt('Apify API 토큰 (apify_api_...). apify-demo.html 에서 발급:', curToken);
+    if (newToken === null) return;
+    const cleanedToken = newToken.trim();
+
+    instagramState.handle = cleanedHandle;
+    instagramState.token = cleanedToken;
+    if (cleanedHandle) localStorage.setItem(IG_HANDLE_KEY, cleanedHandle); else localStorage.removeItem(IG_HANDLE_KEY);
+    if (cleanedToken) localStorage.setItem(IG_TOKEN_KEY, cleanedToken); else localStorage.removeItem(IG_TOKEN_KEY);
     instagramState.posts = null;
     fetchInstagramContent();
   }
@@ -2195,6 +2342,8 @@
   document.addEventListener('DOMContentLoaded', function() {
     const btn = document.getElementById('ig-handle-btn');
     if (btn) btn.addEventListener('click', promptInstagramHandle);
+    const cbtn = document.getElementById('contents-handle-btn');
+    if (cbtn) cbtn.addEventListener('click', promptInstagramHandle);
   });
 
   // === Products Summary (for dashboard metric cards) ===
@@ -3598,6 +3747,11 @@
 
   // ── Init ──
   checkSavedToken();
+
+  // Initial paint from cache (Instagram)
+  try { renderInstagramPanel(); } catch (e) {}
+  try { renderContentsView(); } catch (e) {}
+  try { if (instagramState.posts) updateContentMetrics(instagramState.posts); } catch (e) {}
 
 })();
 </script>
