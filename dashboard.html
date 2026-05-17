@@ -1154,6 +1154,12 @@
       </a>
 
       <div class="sidebar-divider"></div>
+      <div class="sidebar-group-label">컨텐츠 관리</div>
+      <a class="sidebar-item" href="#contents" data-view="contents">
+        <span class="icon">📝</span><span>컨텐츠</span><span class="wip">WIP</span>
+      </a>
+
+      <div class="sidebar-divider"></div>
       <div class="sidebar-group-label">직원 관리</div>
       <a class="sidebar-item" href="#staff" data-view="staff">
         <span class="icon">👤</span><span>직원</span><span class="wip">WIP</span>
@@ -1246,7 +1252,7 @@
         <div class="accent-bar ab-amber"></div>
       </div>
       <div class="metric-card">
-        <div class="metric-tag">총 제품 구좌</div>
+        <div class="metric-tag">총 제품 관리</div>
         <div class="metric-val" id="stat-products-total">—</div>
         <div class="accent-bar ab-teal"></div>
       </div>
@@ -1277,7 +1283,7 @@
 
     <!-- Brand summary panel -->
     <div class="pv-brand-panel" id="pv-brand-panel" style="display:none">
-      <p class="pv-brand-panel-title">브랜드별 제품 구좌</p>
+      <p class="pv-brand-panel-title">브랜드별 제품 관리</p>
       <table class="pv-brand-table">
         <thead>
           <tr>
@@ -1425,6 +1431,12 @@
       <section class="view" id="view-attendance">
         <div class="view-placeholder">
           <h2>근태 관리</h2>
+          <p>이 메뉴는 준비 중입니다.</p>
+        </div>
+      </section>
+      <section class="view" id="view-contents">
+        <div class="view-placeholder">
+          <h2>컨텐츠</h2>
           <p>이 메뉴는 준비 중입니다.</p>
         </div>
       </section>
@@ -1682,7 +1694,7 @@
   };
 
   // === View Router ===
-  const VALID_VIEWS = ['dashboard', 'schedule', 'products', 'sellers', 'sales', 'customers', 'consult', 'staff', 'attendance'];
+  const VALID_VIEWS = ['dashboard', 'schedule', 'products', 'sellers', 'sales', 'customers', 'consult', 'staff', 'attendance', 'contents'];
   let currentView = null;
 
   const VIEW_INITIALIZERS = {
@@ -1718,6 +1730,7 @@
     consult: function initPlaceholderView() {},
     staff: function initPlaceholderView() {},
     attendance: function initPlaceholderView() {},
+    contents: function initPlaceholderView() {},
   };
 
   // === Products Summary (for dashboard metric cards) ===
