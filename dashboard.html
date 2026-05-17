@@ -1132,6 +1132,87 @@
     .active-plans-table .col-brand { color: var(--teal); }
     .active-plans-table .col-status .pv-badge { font-size: 10px; }
     .active-plans-table .col-sales { text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* === Upcoming Plans Panel === */
+    .upcoming-plans-section { margin-bottom: 20px; }
+    .upcoming-plans-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .upcoming-plans-title {
+      font-size: 14px; font-weight: 600; color: #c9d1d9;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .upcoming-plans-title::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--amber, #f59e0b); box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.12);
+    }
+    .upcoming-plans-count { font-size: 12px; color: #8b949e; }
+    .upcoming-plans-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .upcoming-plan-card {
+      background: #161b22; border: 1px solid #1f2530;
+      border-radius: 10px; padding: 12px;
+      cursor: pointer; transition: border-color 0.15s, transform 0.15s;
+      display: flex; gap: 12px;
+    }
+    .upcoming-plan-card:hover {
+      border-color: var(--amber, #f59e0b); transform: translateY(-1px);
+    }
+    .upcoming-plan-thumb {
+      width: 56px; height: 56px; flex-shrink: 0;
+      object-fit: cover; border-radius: 8px; background: #1f2530;
+    }
+    .upcoming-plan-body { min-width: 0; flex: 1; }
+    .upcoming-plan-title {
+      font-size: 13px; font-weight: 600; color: #fff;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .upcoming-plan-meta {
+      font-size: 11px; color: #8b949e; margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .upcoming-plan-foot {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-top: 6px; font-size: 11px;
+    }
+    .upcoming-plan-dday { color: var(--amber, #f59e0b); font-weight: 600; }
+    .upcoming-plan-start { color: #c9d1d9; font-variant-numeric: tabular-nums; }
+    .upcoming-plans-empty {
+      text-align: center; padding: 30px 12px;
+      color: #6e7681; font-size: 13px;
+      background: #161b22; border: 1px dashed #30363d; border-radius: 10px;
+    }
+    .upcoming-plans-table-wrap {
+      margin-top: 14px; overflow-x: auto;
+      background: #161b22; border: 1px solid #1f2530; border-radius: 10px;
+    }
+    .upcoming-plans-table { width: 100%; border-collapse: collapse; }
+    .upcoming-plans-table th, .upcoming-plans-table td {
+      padding: 10px 12px; text-align: left; font-size: 12px;
+      border-bottom: 1px solid #1f2530; color: #c9d1d9; white-space: nowrap;
+    }
+    .upcoming-plans-table th {
+      background: #0d1117; color: #8b949e; font-weight: 600;
+      font-size: 11px; letter-spacing: 0.04em;
+    }
+    .upcoming-plans-table tbody tr { cursor: pointer; }
+    .upcoming-plans-table tbody tr:hover { background: rgba(245, 158, 11, 0.04); }
+    .upcoming-plans-table tbody tr:last-child td { border-bottom: 0; }
+    .upcoming-plans-table .col-idx { width: 36px; color: #6e7681; text-align: center; }
+    .upcoming-plans-table .col-name {
+      display: flex; align-items: center; gap: 8px; max-width: 320px;
+    }
+    .upcoming-plans-table .col-name img {
+      width: 32px; height: 32px; object-fit: cover;
+      border-radius: 6px; flex-shrink: 0; background: #1f2530;
+    }
+    .upcoming-plans-table .col-name span {
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .upcoming-plans-table .col-brand { color: var(--teal); }
   </style>
 </head>
 <body>
@@ -1341,6 +1422,32 @@
             </tr>
           </thead>
           <tbody id="active-plans-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Upcoming Plans Panel -->
+    <div class="upcoming-plans-section">
+      <div class="upcoming-plans-header">
+        <div class="upcoming-plans-title">시작 예정 공구 <span style="color:#6e7681; font-weight:400; font-size:12px; margin-left:6px;">(7일 이내)</span></div>
+        <div class="upcoming-plans-count" id="upcoming-plans-count">—</div>
+      </div>
+      <div class="upcoming-plans-grid" id="upcoming-plans-grid"></div>
+      <div class="upcoming-plans-table-wrap" id="upcoming-plans-table-wrap" style="display:none">
+        <table class="upcoming-plans-table">
+          <thead>
+            <tr>
+              <th class="col-idx">#</th>
+              <th>공구명</th>
+              <th>브랜드</th>
+              <th>약사</th>
+              <th>시작일</th>
+              <th>종료일</th>
+              <th>D-day</th>
+              <th>파트너</th>
+            </tr>
+          </thead>
+          <tbody id="upcoming-plans-tbody"></tbody>
         </table>
       </div>
     </div>
@@ -2726,6 +2833,94 @@
     } catch (e) { return ''; }
   }
 
+  function pvUpcomingDday(startDate) {
+    if (!startDate) return '';
+    try {
+      const start = new Date(startDate);
+      const now = new Date();
+      start.setHours(0, 0, 0, 0);
+      now.setHours(0, 0, 0, 0);
+      const diff = start - now;
+      if (diff <= 0) return 'D-DAY';
+      const days = Math.round(diff / (1000 * 60 * 60 * 24));
+      return `D-${days}`;
+    } catch (e) { return ''; }
+  }
+
+  function renderUpcomingPlans() {
+    const grid = document.getElementById('upcoming-plans-grid');
+    const countEl = document.getElementById('upcoming-plans-count');
+    const tableWrap = document.getElementById('upcoming-plans-table-wrap');
+    const tbody = document.getElementById('upcoming-plans-tbody');
+    if (!grid || !countEl) return;
+
+    const now = new Date();
+    const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+    const upcoming = Array.isArray(cachedPlans)
+      ? cachedPlans
+          .filter(p => {
+            if (!p || p.isActive) return false;
+            if (p.stepCode !== 'T4') return false;
+            if (!p.startDate) return false;
+            try {
+              const start = new Date(p.startDate);
+              const diff = start - now;
+              return diff > 0 && diff <= WEEK_MS;
+            } catch (e) { return false; }
+          })
+          .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+      : [];
+
+    countEl.textContent = upcoming.length > 0 ? `${upcoming.length}건` : '없음';
+
+    if (upcoming.length === 0) {
+      grid.innerHTML = '<div class="upcoming-plans-empty">7일 이내 시작 예정인 공구가 없습니다.</div>';
+      if (tableWrap) tableWrap.style.display = 'none';
+      if (tbody) tbody.innerHTML = '';
+      return;
+    }
+
+    grid.innerHTML = upcoming.map(p => {
+      const dday = pvUpcomingDday(p.startDate);
+      return `
+        <div class="upcoming-plan-card" onclick="openDetail(${Number(p.id)})">
+          <img class="upcoming-plan-thumb" src="${esc(p.imageUrl || '')}" alt="" onerror="this.style.visibility='hidden'">
+          <div class="upcoming-plan-body">
+            <div class="upcoming-plan-title">${esc(p.title || '')}</div>
+            <div class="upcoming-plan-meta">${esc(p.brand || '')}</div>
+            <div class="upcoming-plan-foot">
+              <span class="upcoming-plan-dday">${esc(dday)}</span>
+              <span class="upcoming-plan-start">${esc(pvFormatDate(p.startDate))}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    if (!tableWrap || !tbody) return;
+    tableWrap.style.display = '';
+    tbody.innerHTML = upcoming.map((p, idx) => {
+      const dday = pvUpcomingDday(p.startDate);
+      return `
+        <tr onclick="openDetail(${Number(p.id)})">
+          <td class="col-idx">${idx + 1}</td>
+          <td>
+            <div class="col-name">
+              <img src="${esc(p.imageUrl || '')}" alt="" onerror="this.style.visibility='hidden'">
+              <span>${esc(p.title || '')}</span>
+            </div>
+          </td>
+          <td class="col-brand">${esc(p.brand || '')}</td>
+          <td>${esc(p.influencerName || '')}</td>
+          <td>${esc(pvFormatDate(p.startDate))}</td>
+          <td>${esc(pvFormatDate(p.endDate))}</td>
+          <td><span class="upcoming-plan-dday">${esc(dday)}</span></td>
+          <td>${esc(p.sellerName || '')}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
   function renderActivePlans() {
     const grid = document.getElementById('active-plans-grid');
     const countEl = document.getElementById('active-plans-count');
@@ -2801,6 +2996,7 @@
       '조회 <strong>' + filtered.length + '</strong>건';
 
     renderActivePlans();
+    renderUpcomingPlans();
 
     if (filtered.length === 0) {
       area.innerHTML = '<div class="empty-state">' +
