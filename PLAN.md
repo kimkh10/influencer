@@ -36,8 +36,8 @@
 
 ### 1-5. Cloudflare Pages 설정
 - Wrangler CLI: `npm i -g wrangler`
-- 프로젝트명: `influencer`
-- 프로덕션 URL: https://influencer-p68.pages.dev
+- 프로젝트명: (예: `influencer`, 본인 환경에 맞게 변경)
+- 프로덕션 URL은 본인 Cloudflare Pages 프로젝트명에 따라 달라집니다 (예: `https://<your-project>.pages.dev`)
 
 ---
 
@@ -223,11 +223,11 @@ influencer/
 
 **동작**
 ```
-브라우저 (influencer-p68.pages.dev)
+브라우저 (<your-project>.pages.dev)
   → /api/admin/v2/... (같은 도메인, CORS 없음)
   → Cloudflare Pages Function (서버)
     → api.store.friendly-pharmacist.com (서버↔서버, CORS 없음)
-  ← 응답 전달 (Access-Control-Allow-Origin: 화이트리스트 Origin 추가)
+  ← 응답 전달 (Access-Control-Allow-Origin: 허용된 Origin 추가)
 ```
 
 **환경 통합**
@@ -257,11 +257,11 @@ influencer/
 ## 6. 배포
 
 ```bash
-CLOUDFLARE_API_TOKEN=<토큰> wrangler pages deploy . --project-name=influencer --commit-dirty=true
+CLOUDFLARE_API_TOKEN=<토큰> wrangler pages deploy . --project-name=<your-project> --commit-dirty=true
 ```
 
 - 빌드 없음 (정적 HTML + Cloudflare Pages Functions)
-- 프로덕션 URL: https://influencer-p68.pages.dev
+- 프로덕션 URL은 본인 Cloudflare Pages 프로젝트명에 따라 달라집니다 (예: `https://<your-project>.pages.dev`)
 - Pages Functions: `functions/` 디렉토리 자동 인식
 
 ---
@@ -269,19 +269,19 @@ CLOUDFLARE_API_TOKEN=<토큰> wrangler pages deploy . --project-name=influencer 
 ## 7. 운영 플로우
 
 ### 공동구매 캘린더
-1. influencer-p68.pages.dev 접속 → 로그인 (또는 대시보드 토큰 자동 공유)
+1. `<your-project>.pages.dev` 접속 → 로그인 (또는 대시보드 토큰 자동 공유)
 2. 친한스토어 API에서 공구 데이터 실시간 로드 (T4/T6/T8/Y0 필터)
 3. 인라인 편집 → "이미지 저장" → PNG 다운로드 → 인스타그램 업로드
 
 ### 매출 대시보드
-1. influencer-p68.pages.dev/dashboard 접속
+1. `<your-project>.pages.dev/dashboard` 접속
 2. ID/PW 로그인 (master는 슬랙 2FA 추가)
 3. 통계/차트/테이블 확인, 공구 클릭 시 상세 매출 조회
 4. 필요 시 엑셀/CSV 내보내기
 
 ### 이벤트 당첨자 관리
-1. influencer-p68.pages.dev/event → 당첨자가 배송지 입력
-2. influencer-p68.pages.dev/event-admin → 관리자가 제출 데이터 확인/내보내기
+1. `<your-project>.pages.dev/event` → 당첨자가 배송지 입력
+2. `<your-project>.pages.dev/event-admin` → 관리자가 제출 데이터 확인/내보내기
 
 ### AI 스터디
 1. study-curriculum → 커리큘럼 확인
@@ -297,7 +297,7 @@ CLOUDFLARE_API_TOKEN=<토큰> wrangler pages deploy . --project-name=influencer 
 - html2canvas: `createPattern` 0크기 에러 → `CanvasRenderingContext2D.prototype.createPattern` monkey-patch
 - `contenteditable` 요소에 반드시 `spellcheck="false"` 포함
 - html2canvas 호환성: pseudo-element 사용 금지 → 실제 DOM 요소 사용
-- CORS 프록시: Origin 화이트리스트 적용 (influencer-p68.pages.dev, localhost)
+- CORS 프록시: Origin 허용 규칙 적용 (`*.pages.dev`, localhost / 127.0.0.1)
 - Bearer 토큰은 localStorage에 저장 — 민감 정보이므로 공용 PC 사용 주의
 - 캘린더와 대시보드가 동일한 `dashboard_bearer_token` 키를 공유하여 한 번 로그인으로 양쪽 사용 가능
 - 매출 데이터(`group_purchase_plan_report_sale`)는 주문 미발생 시 null 반환 → 방어 코드 필요

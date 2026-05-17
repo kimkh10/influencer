@@ -1,0 +1,17 @@
+{
+  "name": "influencer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "공동구매 캘린더 & AI 스터디 플랫폼 (Cloudflare Pages)",
+  "scripts": {
+    "dev": "wrangler pages dev . --port 8788 --compatibility-date=2025-05-01",
+    "start": "npm run dev",
+    "deploy": "wrangler pages deploy . --project-name=influencer --commit-dirty=true"
+  },
+  "devDependencies": {
+    "wrangler": "^3.114.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

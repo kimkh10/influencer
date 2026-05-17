@@ -1,2 +1,7 @@
 .vercel
 .wrangler
+node_modules
+npm-debug.log*
+.DS_Store
+.dev.vars
+.claude/worktrees/

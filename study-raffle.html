@@ -342,31 +342,6 @@
       z-index: 0;
       box-shadow: 0 0 0 2px #FFD9B8 inset, 0 0 0 4px #C04A1E inset;
     }
-    /* 룰렛 상단 마커 (화살 도착점) */
-    .roulette-marker {
-      position: absolute;
-      top: -2px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 14px solid transparent;
-      border-right: 14px solid transparent;
-      border-top: 22px solid #FFD400;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
-      z-index: 3;
-    }
-    .roulette-marker::after {
-      content: '';
-      position: absolute;
-      bottom: 22px;
-      left: -6px;
-      width: 12px;
-      height: 12px;
-      background: #FFD400;
-      border-radius: 50%;
-      box-shadow: 0 0 0 2px #5C2E1A;
-    }
     .roulette-stage.shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97); }
     @keyframes shake {
       0%, 100% { transform: translate(0, 0); }
@@ -861,7 +836,6 @@
       <div class="roulette-stage" id="roulette-stage" style="display:none">
         <div class="roulette-rim"></div>
         <svg class="roulette" id="roulette" viewBox="0 0 360 360" preserveAspectRatio="xMidYMid meet"></svg>
-        <div class="roulette-marker"></div>
         <div class="roulette-center" id="roulette-center">START</div>
         <div class="arrow-wrapper" id="arrow-wrapper">
         <div class="arrow-projectile" id="arrow-projectile">

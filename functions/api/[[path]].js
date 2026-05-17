@@ -1,19 +1,25 @@
 const TARGET = 'https://api.store.friendly-pharmacist.com';
-const ALLOWED_ORIGINS = [
-  'https://influencer-p68.pages.dev',
-  'http://localhost:8788',
-  'http://localhost:3000',
-  'http://localhost:8080',
-  'http://127.0.0.1:8788',
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:8080',
-];
+
+// Origin 허용 규칙 (clone 받은 누구든 자신의 Pages 프로젝트에서 동작하도록 일반화):
+// - 모든 *.pages.dev 서브도메인 (Cloudflare Pages 프로덕션/프리뷰)
+// - 로컬 개발: http://localhost:<port> / http://127.0.0.1:<port>
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  try {
+    const u = new URL(origin);
+    if (u.protocol === 'https:' && (u.hostname === 'pages.dev' || u.hostname.endsWith('.pages.dev'))) return true;
+    if (u.protocol === 'http:' && (u.hostname === 'localhost' || u.hostname === '127.0.0.1')) return true;
+  } catch (_) {
+    return false;
+  }
+  return false;
+}
 
 function getCorsOrigin(request) {
   const origin = request.headers.get('origin') || '';
-  if (ALLOWED_ORIGINS.includes(origin)) return origin;
-  if (origin.endsWith('.influencer-p68.pages.dev')) return origin;
-  return ALLOWED_ORIGINS[0];
+  if (isAllowedOrigin(origin)) return origin;
+  // 기본값: 요청 Origin 헤더가 없거나 허용되지 않으면 와일드카드 대신 빈 값 반환을 피하기 위해 localhost를 폴백으로 사용
+  return 'http://localhost:8788';
 }
 
 export async function onRequest(context) {

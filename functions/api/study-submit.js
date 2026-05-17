@@ -1,16 +1,20 @@
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbymf9MuhljUlU26eM6-FypyLtmVN2MpUSe9YSUzyRgzJm9ngmz5hgXkFbujMhFvSAa8/exec';
-
 export async function onRequestPost(context) {
+  const scriptUrl = context.env.STUDY_SCRIPT_URL;
+  if (!scriptUrl) {
+    return new Response(
+      JSON.stringify({ result: 'error', message: 'STUDY_SCRIPT_URL is not configured' }),
+      { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }
+    );
+  }
+
   const body = await context.request.text();
 
-  const res = await fetch(SCRIPT_URL, {
+  await fetch(scriptUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
     body: body,
     redirect: 'follow',
   });
-
-  const text = await res.text();
 
   return new Response(JSON.stringify({ result: 'success' }), {
     status: 200,

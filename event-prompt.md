@@ -93,7 +93,7 @@ function showToast(msg, type = '') {
 
 ### Google Sheets 연동 상수 (두 파일 동일)
 ```js
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4ihndsT6HQh1WYRch8vnCdRlY084Tw5sPrLDfLpCJ5raQROrUysoTEZMdjcLSWC3nbw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
 ```
 
 ### Google Sheets API 호출 패턴
@@ -319,7 +319,7 @@ document.getElementById('back-btn').addEventListener('click', () => {
 ```js
 const ADMIN_ID = 'admin';
 const ADMIN_PW = '1234';
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4ihndsT6HQh1WYRch8vnCdRlY084Tw5sPrLDfLpCJ5raQROrUysoTEZMdjcLSWC3nbw/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
 const SESSION_KEY = 'event_form_admin_session_v1';
 
 let cachedSubs = []; // 로드한 데이터 인메모리 캐시
@@ -483,9 +483,9 @@ jobs:
 |------|-----|
 | **입력 폼** | https://event-form-static.pages.dev/ |
 | **관리자** | https://event-form-static.pages.dev/admin.html |
-| **Google Sheets** | https://docs.google.com/spreadsheets/d/1xhZ5W7YVJk9tWT8v5aL5ezab89YR-DgNut-1LbSjcYo |
-| **Apps Script** | https://script.google.com/macros/s/AKfycbz4ihndsT6HQh1WYRch8vnCdRlY084Tw5sPrLDfLpCJ5raQROrUysoTEZMdjcLSWC3nbw/exec |
-| Cloudflare 계정 | wolsey@pharma-bros.com |
+| **Google Sheets** | `https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID` |
+| **Apps Script** | `https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec` |
+| Cloudflare 계정 | `<your-cloudflare-account@example.com>` |
 
 ---
 
@@ -678,7 +678,7 @@ jobs:
   [입력 폼 →]  [📊 구글 시트]  [엑셀 내보내기 (primary)]  [CSV 내보내기]  [전체 삭제 (danger)]  [로그아웃]
   ```
 - **📊 구글 시트** 버튼: `<a class="btn-sm" target="_blank" rel="noopener">` — Google Sheets 원본을 새 탭으로 연다.
-  - 링크: `https://docs.google.com/spreadsheets/d/1xhZ5W7YVJk9tWT8v5aL5ezab89YR-DgNut-1LbSjcYo/edit?gid=1036698934#gid=1036698934`
+  - 링크: `https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?gid=YOUR_GID#gid=YOUR_GID`
 - `.btn-sm`: padding `9px 16px`, font 13px, border-radius 10px, 흰 배경 + border, hover 시 primary 컬러
 - `.btn-sm.primary`: primary→dark 그라디언트, 흰 글자
 - `.btn-sm.danger`: hover 시 `border-color: var(--error); color: var(--error)`

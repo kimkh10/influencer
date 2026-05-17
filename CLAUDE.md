@@ -104,10 +104,10 @@ influencer/
 ## 배포
 ```bash
 # Cloudflare Pages (전체 배포)
-CLOUDFLARE_API_TOKEN=<토큰> wrangler pages deploy . --project-name=influencer --commit-dirty=true
+CLOUDFLARE_API_TOKEN=<토큰> wrangler pages deploy . --project-name=<your-project> --commit-dirty=true
 ```
-- 프로덕션 URL: https://influencer-p68.pages.dev
-- 프로젝트명: `influencer`
+- 프로덕션 URL은 본인 Cloudflare Pages 프로젝트명에 따라 달라집니다 (예: `https://<your-project>.pages.dev`)
+- 프로젝트명: (예: `influencer`, 본인 환경에 맞게 변경)
 
 ## 주의사항
 - html2canvas에서 `createPattern` 0크기 에러 방지를 위해 `CanvasRenderingContext2D.prototype.createPattern`을 monkey-patch함

@@ -546,6 +546,15 @@ html, body {
     <h2>사전 준비 — 환경 세팅</h2>
     <p class="section-desc">본인의 운영체제에 맞는 탭을 선택하여 환경을 세팅하세요.</p>
 
+    <div style="background:linear-gradient(135deg,#FFF4E6 0%,#FFE8D1 100%);border:2px solid #FF8C42;border-radius:14px;padding:18px 20px;margin:18px 0 22px;">
+      <div style="font-weight:800;color:#D2691E;font-size:15px;margin-bottom:10px;">📋 실습 전 꼭 준비해 주세요</div>
+      <ul style="margin:0;padding-left:20px;line-height:1.9;color:#5a3a1a;font-size:14px;">
+        <li><strong>가능하면 Mac PC</strong> — 실습 가이드와 단축키가 Mac 기준으로 작성되어 있어, Mac을 권장합니다. (Windows도 가능하지만 일부 명령어/단축키가 다릅니다.)</li>
+        <li><strong>Claude Pro 플랜 이상 구독</strong> — Claude Code는 <strong>무료 플랜으로 사용할 수 없습니다</strong>. <a href="https://claude.ai/upgrade" target="_blank" style="color:#D2691E;font-weight:700;">Claude Pro</a>($20/월) 이상 구독 또는 Anthropic API 키가 필요합니다.</li>
+      </ul>
+      <div style="margin-top:10px;font-size:12px;color:#8a5a2a;">※ Pro 구독은 월 단위 결제이며 언제든 해지 가능합니다. 스터디 기간에만 사용하셔도 됩니다.</div>
+    </div>
+
     <div class="os-tabs">
       <div class="os-tab active" onclick="switchOS('mac')"><span class="os-icon">🍎</span> Mac</div>
       <div class="os-tab" onclick="switchOS('win')"><span class="os-icon">🪟</span> Windows</div>
@@ -705,6 +714,42 @@ html, body {
         </div>
       </div>
 
+      <div class="step-card">
+        <div class="step-label">Step 10 — (선택) 상태바(Statusline) 설정</div>
+        <p>Claude Code 하단에 <strong>시간 · 모델명 · 컨텍스트 사용률 · 5시간/주간 사용 한도</strong>를 한 줄로 보여주는 상태바를 추가합니다. 작업 중 한도를 미리 확인할 수 있어 유용합니다.</p>
+
+        <p style="margin-top:10px;font-weight:700;color:#FF6B2B;">설정 방법 (가장 쉬운 방식)</p>
+        <p>아래 예시 이미지를 <strong>스크린캡처</strong>한 뒤 Claude Code에 붙여넣고 이렇게만 입력하세요:</p>
+        <div class="code-block">
+          이렇게 나오게 설정해줘
+        </div>
+        <p style="margin-top:6px;font-size:12px;color:#888;">Claude가 알아서 <code>~/.claude/statusline.sh</code> 스크립트와 <code>~/.claude/settings.json</code> 설정을 만들어 줍니다.</p>
+
+        <p style="margin-top:14px;font-size:12px;color:#999;">참고 이미지 — 이 모양 그대로 따라하면 됩니다:</p>
+        <div class="terminal-mockup">
+          <div class="terminal-titlebar">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title-text">Statusline 예시</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-pane" style="border-right:none;font-size:12px;line-height:1.7;white-space:nowrap;overflow-x:auto;">
+              <span style="color:#fff;font-weight:700;">08:59</span>
+              <span style="color:#FFA94D;font-weight:700;">&nbsp;Opus 4.7 (1M context)</span><span style="color:#5ED3F3;">[1M]</span>
+              <span style="color:#7FE07F;">&nbsp;ai-project/influencer</span>
+              <span style="color:#E08AE0;">&nbsp;main</span>
+              <span style="color:#aaa;">&nbsp;ctx:</span><span style="color:#FFD93D;">60%</span>
+              <span style="color:#aaa;">&nbsp;5h:</span><span style="color:#7FE07F;">4%</span><span style="color:#777;">(~4h0m)</span>
+              <span style="color:#aaa;">&nbsp;wk:</span><span style="color:#FFD93D;">10%</span><span style="color:#777;">(~1d18h)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip"><strong>표시 항목:</strong> 시간 · 모델명 · 컨텍스트 윈도우 · 작업 디렉토리 · git 브랜치 · 컨텍스트 사용률(ctx) · 5시간 한도(5h) · 주간 한도(wk)<br>
+        <span style="font-size:12px;color:#666;">※ 5h/wk는 Claude.ai 구독자에 한해 첫 API 응답 후부터 표시됩니다.</span></div>
+      </div>
+
     </div>
 
     <!-- ===== Windows 환경 세팅 ===== -->
@@ -824,6 +869,42 @@ html, body {
         • 패널 닫기: <code>Ctrl + Shift + W</code></div>
       </div>
 
+      <div class="step-card">
+        <div class="step-label">Step 10 — (선택) 상태바(Statusline) 설정</div>
+        <p>Claude Code 하단에 <strong>시간 · 모델명 · 컨텍스트 사용률 · 5시간/주간 사용 한도</strong>를 한 줄로 보여주는 상태바를 추가합니다. 작업 중 한도를 미리 확인할 수 있어 유용합니다.</p>
+
+        <p style="margin-top:10px;font-weight:700;color:#FF6B2B;">설정 방법 (가장 쉬운 방식)</p>
+        <p>아래 예시 이미지를 <strong>스크린캡처</strong>한 뒤 Claude Code에 붙여넣고 이렇게만 입력하세요:</p>
+        <div class="code-block">
+          이렇게 나오게 설정해줘
+        </div>
+        <p style="margin-top:6px;font-size:12px;color:#888;">Claude가 알아서 <code>~/.claude/statusline.sh</code> 스크립트와 <code>~/.claude/settings.json</code> 설정을 만들어 줍니다.</p>
+
+        <p style="margin-top:14px;font-size:12px;color:#999;">참고 이미지 — 이 모양 그대로 따라하면 됩니다:</p>
+        <div class="terminal-mockup">
+          <div class="terminal-titlebar">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title-text">Statusline 예시</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-pane" style="border-right:none;font-size:12px;line-height:1.7;white-space:nowrap;overflow-x:auto;">
+              <span style="color:#fff;font-weight:700;">08:59</span>
+              <span style="color:#FFA94D;font-weight:700;">&nbsp;Opus 4.7 (1M context)</span><span style="color:#5ED3F3;">[1M]</span>
+              <span style="color:#7FE07F;">&nbsp;ai-project/influencer</span>
+              <span style="color:#E08AE0;">&nbsp;main</span>
+              <span style="color:#aaa;">&nbsp;ctx:</span><span style="color:#FFD93D;">60%</span>
+              <span style="color:#aaa;">&nbsp;5h:</span><span style="color:#7FE07F;">4%</span><span style="color:#777;">(~4h0m)</span>
+              <span style="color:#aaa;">&nbsp;wk:</span><span style="color:#FFD93D;">10%</span><span style="color:#777;">(~1d18h)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tip"><strong>표시 항목:</strong> 시간 · 모델명 · 컨텍스트 윈도우 · 작업 디렉토리 · git 브랜치 · 컨텍스트 사용률(ctx) · 5시간 한도(5h) · 주간 한도(wk)<br>
+        <span style="font-size:12px;color:#666;">※ 5h/wk는 Claude.ai 구독자에 한해 첫 API 응답 후부터 표시됩니다.</span></div>
+      </div>
+
     </div>
 
     <div class="divider"></div>
@@ -892,6 +973,7 @@ html, body {
     <ul class="checklist">
       <li>캘린더의 테마 색상을 변경할 수 있다</li>
       <li>새로운 제품 매핑을 추가할 수 있다</li>
+      <li>자주 쓰는 제품을 별칭 테이블로 관리할 수 있다</li>
       <li>캘린더를 PNG 이미지로 다운로드할 수 있다</li>
       <li>캘린더가 친한스토어 API에서 데이터를 받아오는 구조를 이해한다</li>
     </ul>
@@ -923,7 +1005,44 @@ html, body {
     </div>
 
     <div class="step-card">
-      <div class="step-label">실습 1-C — 자유 수정</div>
+      <div class="step-label">실습 1-C — 자주 사용하는 제품 별칭(Alias) 관리</div>
+      <p>같은 제품이 매월 반복적으로 공구로 올라올 때마다 매번 매핑을 추가하면 비효율적입니다. <strong>제품 별칭 관리 시스템</strong>을 만들어 한 번 정의한 제품을 키워드로 자동 매칭되게 해봅니다.</p>
+
+      <p style="margin-top:10px;"><strong>1) 현재 구조 파악</strong> — Claude Code에 요청:</p>
+      <div class="code-block">
+        index.html 에서 캘린더가 제품을 어떻게 매핑하는지 분석해줘.<br>
+        getShortName, getProductDesc, getBadge 함수가 어떻게 동작하고,<br>
+        새 제품을 추가하려면 몇 군데를 고쳐야 하는지 알려줘
+      </div>
+
+      <p style="margin-top:14px;"><strong>2) 별칭 테이블로 리팩토링</strong>:</p>
+      <div class="code-block">
+        index.html 의 제품 매핑을 PRODUCT_ALIASES 라는 객체 하나로<br>
+        통합해줘. 다음 구조로:<br><br>
+        const PRODUCT_ALIASES = {<br>
+        &nbsp;&nbsp;'콜라겐': { name: '피쉬 콜라겐', desc: '먹는 피부관리', badge: 'NEW' },<br>
+        &nbsp;&nbsp;'오메가': { name: '식물성 오메가3', desc: '혈관 건강', badge: 'HOT' },<br>
+        &nbsp;&nbsp;// ...<br>
+        };<br><br>
+        getShortName, getProductDesc, getBadge 함수가 이 테이블을 사용하도록 바꿔줘
+      </div>
+
+      <p style="margin-top:14px;"><strong>3) 다중 키워드 매칭</strong>:</p>
+      <div class="code-block">
+        하나의 제품에 여러 별칭(키워드)을 매핑할 수 있게 확장해줘.<br>
+        예: '루테인'과 '눈영양제'가 모두 같은 제품으로 매칭되도록.<br>
+        키워드는 배열로 받을 수 있게 해줘
+      </div>
+
+      <p style="margin-top:14px;"><strong>4) 자주 쓰는 제품 미리 등록</strong> — 본인이 자주 다루는 5~10개 제품을 별칭 테이블에 추가하고 캘린더에서 정상 표시되는지 확인합니다.</p>
+
+      <div class="tip"><strong>왜 별칭으로 관리하나요?</strong> 친한스토어 공구 타이틀은 매번 약간씩 달라집니다("YDY 콜라겐 60캡슐" → "[프리미엄] YDY 콜라겐 90캡슐"). 키워드 기반 별칭 테이블이 있으면 타이틀이 바뀌어도 동일 제품으로 자동 인식되어 매월 매핑을 다시 손보지 않아도 됩니다.</div>
+
+      <div class="tip"><strong>심화 도전:</strong> 별칭 테이블을 별도 JSON 파일로 분리하거나, localStorage에 저장해서 페이지에서 직접 추가/수정할 수 있는 관리 UI를 만들어 보세요.</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-label">실습 1-D — 자유 수정</div>
       <p>수정하고 싶은 부분을 <strong>스크린캡처</strong>하여 Claude Code에 붙여넣고, 원하는 변경을 자연어로 설명합니다. 예시:</p>
       <div class="code-block">
         <span class="comment"># 캘린더 헤더 부분을 캡처해서 붙여넣은 후:</span><br>
@@ -979,10 +1098,10 @@ html, body {
       <div class="code-block">
         <span class="comment"># 왜 차단될까?</span><br>
         <span class="comment"># 브라우저 보안 정책: 다른 도메인으로의 직접 요청을 차단</span><br>
-        <span class="comment"># influencer-p68.pages.dev → api.store.xxx.com ❌ (CORS 차단)</span><br><br>
+        <span class="comment"># &lt;your-project&gt;.pages.dev → api.store.xxx.com ❌ (CORS 차단)</span><br><br>
         <span class="comment"># 해결: 같은 도메인 프록시 경유</span><br>
         <span class="comment"># Step 1: 브라우저 → 같은 도메인 (CORS 없음)</span><br>
-        influencer-p68.pages.dev<span class="flag">/api/admin/...</span><br><br>
+        &lt;your-project&gt;.pages.dev<span class="flag">/api/admin/...</span><br><br>
         <span class="comment"># Step 2: Cloudflare Function → API 서버 (서버간 통신, CORS 없음)</span><br>
         <span class="flag">&rarr;</span> api.store.friendly-pharmacist.com<span class="flag">/api/admin/...</span>
       </div>

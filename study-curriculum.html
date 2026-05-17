@@ -496,10 +496,28 @@
     <ul class="note-list">
       <li><strong>호스트 (3명)</strong> &mdash; 커리큘럼 설계, 과제 플래닝, 문의 답변 담당</li>
       <li><strong>게스트 (최대 6명)</strong> &mdash; 호스트 인원의 2배수로 모집, 과제 수행</li>
+      <li><strong>1:1 코칭 전담 (개발팀)</strong> &mdash; 호스트(파마브로스 AX 개발팀)에서 게스트별 <strong>전담 코치</strong>를 배정하여 <strong>개인 채널(DM)</strong>로 일대일 소통. 막힌 지점·개인 도전 과제 설계·코드 리뷰를 별도 채널에서 빠르게 해결합니다.</li>
       <li><strong>오프라인 모임 (1시간)</strong> &mdash; 지난 과제 리뷰 &rarr; Q&amp;A &rarr; 다음 과제 플래닝 &rarr; 문의 답변</li>
       <li><strong>과제 수행</strong> &mdash; 모임 후 다음 수업 전까지 개별 과제 진행</li>
       <li><strong>개인채널 연계</strong> &mdash; 과제 결과물을 약사님 개인 채널 콘텐츠로 활용</li>
     </ul>
+  </div>
+
+  <!-- 소통 채널 구조 -->
+  <div class="note-card">
+    <div class="note-title">소통 채널 구조</div>
+    <ul class="note-list">
+      <li><strong>그룹 채널</strong> &mdash; 전체 공지, 과제 결과물 공유, 자유 Q&amp;A (게스트 + 호스트 전원)</li>
+      <li><strong>1:1 코칭 채널 (DM)</strong> &mdash; 게스트마다 <strong>전담 개발팀 코치 1명</strong>이 배정되어 개인 DM으로 직접 소통. 코드 막힘, 개인 도전 과제 방향성, 배포 이슈 등 <strong>개인별 상황</strong>은 이 채널에서 처리합니다.</li>
+      <li><strong>오프라인 모임</strong> &mdash; 주 1회, 게스트 전원 + 호스트가 한자리에 모여 공통 주제 진행</li>
+    </ul>
+    <div style="margin-top:12px;background:#FFF4E6;border-left:3px solid #FF8C42;padding:10px 14px;border-radius:6px;font-size:13px;color:#5a3a1a;line-height:1.7;">
+      <strong>💡 1:1 코칭이 필요한 상황 예시</strong><br>
+      &bull; 그룹 채널에서 묻기 애매한 개인적인 막힘<br>
+      &bull; 본인의 도전 과제 아이디어 구체화·설계 상담<br>
+      &bull; 배포 환경/계정/인증 등 개인 환경 이슈<br>
+      &bull; 코드 리뷰 요청 (PR 또는 깃허브 링크 공유)
+    </div>
   </div>
 
   <div class="divider"></div>
@@ -509,13 +527,13 @@
     <div class="track-header">
       <div class="track-num">1</div>
       <div class="track-title-wrap">
-        <div class="track-title">환경 세팅 & 실습 가이드 실행</div>
+        <div class="track-title">환경 세팅 & 실습 1·2 (캘린더 + 대시보드)</div>
         <div class="track-subtitle">Week 1 &middot; 오프라인 모임 (1h)</div>
       </div>
     </div>
     <div class="track-card">
       <div class="track-desc">
-        개발 환경을 세팅하고, 실습 가이드를 따라 프로젝트를 로컬에서 실행합니다.
+        개발 환경을 세팅하고, 실습 1(캘린더)과 실습 2(대시보드)를 함께 시작합니다.
         Claude Code 기본 사용법과 스크린캡처를 활용한 바이브코딩을 체험합니다.
       </div>
 
@@ -526,16 +544,16 @@
           <li>GitHub에서 프로젝트 클론 + 개인 레포 연결</li>
           <li>로컬 서버 실행 &mdash; <code>npx wrangler pages dev .</code>로 브라우저에서 확인</li>
           <li>Claude Code 기본 사용법: 스크린캡처 붙여넣기 + 자연어로 요청</li>
-          <li>Q&amp;A 및 문의 답변</li>
+          <li>실습 1 (공구캘린더) &amp; 실습 2 (공구대시보드) 함께 시작</li>
         </ul>
       </div>
 
       <div class="task-group">
         <div class="task-label">&#x1F4DD; 과제 &mdash; 다음 수업 전까지</div>
         <ul class="task-list">
-          <li><strong>실습 1 (공구캘린더)</strong> 완료하기: 테마 색상 변경, 제품 매핑 추가, 자유 수정</li>
-          <li>수정한 캘린더를 PNG로 저장해서 그룹 채널에 공유</li>
-          <li><strong>해보고 싶은 과제 제안</strong>: 앞으로 만들어보고 싶은 기능이나 페이지를 그룹 채널에 공유</li>
+          <li><strong>실습 1 (공구캘린더)</strong> 완료: 테마 색상 변경, 제품 매핑 추가, 자유 수정</li>
+          <li><strong>실습 2 (공구대시보드)</strong> 완료: 대시보드 커스터마이징 (차트, 컬럼, 통계 카드 등)</li>
+          <li>각 결과물 스크린캡처/PNG로 그룹 채널에 공유</li>
           <li>실습 중 궁금한 점은 그룹 채널에 질문</li>
         </ul>
       </div>
@@ -551,74 +569,33 @@
     <div class="track-header">
       <div class="track-num">2</div>
       <div class="track-title-wrap">
-        <div class="track-title">캘린더 과제 리뷰 & 대시보드 실습</div>
+        <div class="track-title">실습 1·2 리뷰 & 실습 3 (당첨자폼) + 도전 과제 선정</div>
         <div class="track-subtitle">Week 2 &middot; 오프라인 모임 (1h)</div>
       </div>
     </div>
     <div class="track-card">
       <div class="track-desc">
-        1주차 캘린더 과제를 리뷰하고, REST API 인증과 CORS 프록시 개념을 배웁니다.
-        실습 2(공구대시보드)를 함께 시작하고, 각자의 과제를 설정합니다.
+        1주차에 완료한 실습 1·2를 함께 리뷰하고, 실습 3(당첨자폼)을 빠르게 마무리합니다.
+        이번 주부터는 <strong>각자의 도전 과제</strong>를 선정하여 3·4주차에 발표 준비를 시작합니다.
       </div>
 
       <div class="task-group">
         <div class="task-label">&#x1F91D; 오프라인 모임 (1시간)</div>
         <ul class="task-list">
-          <li>1주차 과제 리뷰: 각자 수정한 캘린더 공유 &amp; 피드백</li>
-          <li>실습 중 어려웠던 점 Q&amp;A</li>
-          <li>핵심 개념: REST API 인증(JWT), CORS 프록시 원리</li>
-          <li>실습 2 (공구대시보드) 함께 시작: 대시보드 접속 &amp; 로그인</li>
-          <li>이번 주 과제 설정: 대시보드 기반 자기만의 과제 선정</li>
-        </ul>
-      </div>
-
-      <div class="task-group">
-        <div class="task-label">&#x1F4DD; 과제 &mdash; 다음 수업 전까지</div>
-        <ul class="task-list">
-          <li><strong>실습 2 (공구대시보드)</strong> 완료하기: Swagger 확인, 대시보드 커스터마이징</li>
-          <li>자기만의 과제 1개 선정하여 완성 (예: 차트 변경, 컬럼 추가, 통계 카드 등)</li>
-          <li>결과물 스크린캡처와 함께 그룹 채널에 공유</li>
-        </ul>
-      </div>
-
-      <div class="practice-link">
-        <a href="study-skills-practice#practice2">실습 가이드: 공구대시보드 실습 바로가기 &rarr;</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Week 3 -->
-  <div class="track-section">
-    <div class="track-header">
-      <div class="track-num">3</div>
-      <div class="track-title-wrap">
-        <div class="track-title">대시보드 과제 리뷰 & 당첨자폼 실습</div>
-        <div class="track-subtitle">Week 3 &middot; 오프라인 모임 (1h)</div>
-      </div>
-    </div>
-    <div class="track-card">
-      <div class="track-desc">
-        2주차 대시보드 과제를 리뷰하고, HTML 폼 구조와 Google Apps Script 연동을 배웁니다.
-        실습 3(당첨자폼)을 함께 시작하고, 도전 과제를 설정합니다.
-      </div>
-
-      <div class="task-group">
-        <div class="task-label">&#x1F91D; 오프라인 모임 (1시간)</div>
-        <ul class="task-list">
-          <li>2주차 과제 리뷰: 각자 커스터마이징한 대시보드 발표 &amp; 피드백</li>
-          <li>실습 중 어려웠던 점 Q&amp;A</li>
-          <li>핵심 개념: HTML 폼 요소, Google Apps Script 연동</li>
+          <li>실습 1·2 과제 리뷰: 각자 커스터마이징한 캘린더/대시보드 발표 &amp; 피드백</li>
+          <li>핵심 개념 정리: REST API 인증(JWT), CORS 프록시, HTML 폼 + Apps Script</li>
           <li>실습 3 (당첨자폼) 함께 시작: 제품 정보 변경, 폼 필드 추가</li>
-          <li>도전 과제 선정: 실습 가이드의 도전 과제(A~F) 중 택 1</li>
+          <li><strong>도전 과제 선정</strong>: 실습 가이드의 도전 과제(A~F) 중 택 1, 또는 본인이 만들고 싶은 주제</li>
+          <li>실습 중 어려웠던 점 Q&amp;A</li>
         </ul>
       </div>
 
       <div class="task-group">
         <div class="task-label">&#x1F4DD; 과제 &mdash; 다음 수업 전까지</div>
         <ul class="task-list">
-          <li><strong>실습 3 (당첨자폼)</strong> 완료하기: 제품 변경, 필드 추가, 관리자 페이지 확인</li>
-          <li><strong>도전 과제</strong> 1개 완성하기 (최종 발표 준비)</li>
-          <li>결과물을 배포 URL과 함께 그룹 채널에 공유</li>
+          <li><strong>실습 3 (당첨자폼)</strong> 완료하기</li>
+          <li><strong>도전 과제 착수</strong>: 기획·요구사항을 정리하고 첫 프로토타입 시작</li>
+          <li>진행 상황 또는 막힌 지점을 그룹 채널에 공유</li>
         </ul>
       </div>
 
@@ -628,26 +605,65 @@
     </div>
   </div>
 
+  <!-- Week 3 -->
+  <div class="track-section">
+    <div class="track-header">
+      <div class="track-num">3</div>
+      <div class="track-title-wrap">
+        <div class="track-title">도전 과제 중간 리뷰</div>
+        <div class="track-subtitle">Week 3 &middot; 오프라인 모임 (1h)</div>
+      </div>
+    </div>
+    <div class="track-card">
+      <div class="track-desc">
+        2주차까지 실습은 모두 마쳤습니다. 이번 주부터는 <strong>각자 선정한 도전 과제</strong>를 중심으로
+        진행 상황을 공유하고, 막힌 부분을 함께 풀어가는 코드 리뷰 시간을 갖습니다.
+      </div>
+
+      <div class="task-group">
+        <div class="task-label">&#x1F91D; 오프라인 모임 (1시간)</div>
+        <ul class="task-list">
+          <li><strong>도전 과제 중간 발표</strong>: 각자 진행 상황 공유 (인당 5~7분)</li>
+          <li>막힌 부분 함께 디버깅: Claude Code 활용 팁 공유</li>
+          <li>설계/UX 피드백: 호스트 + 동료 게스트의 코멘트</li>
+          <li>다음 주 최종 발표 형식 안내 (시연 + 회고)</li>
+        </ul>
+      </div>
+
+      <div class="task-group">
+        <div class="task-label">&#x1F4DD; 과제 &mdash; 다음 수업 전까지</div>
+        <ul class="task-list">
+          <li><strong>도전 과제 완성</strong>: 받은 피드백을 반영하여 마무리</li>
+          <li>Cloudflare Pages에 배포하여 공유 가능한 URL 만들기</li>
+          <li>최종 발표 자료 준비 (1~2장 분량 요약 또는 스크린캡처)</li>
+        </ul>
+      </div>
+
+      <div class="practice-link">
+        <a href="study-skills-practice#challenge">실습 가이드: 도전 과제 목록 바로가기 &rarr;</a>
+      </div>
+    </div>
+  </div>
+
   <!-- Week 4 -->
   <div class="track-section">
     <div class="track-header">
       <div class="track-num">4</div>
       <div class="track-title-wrap">
-        <div class="track-title">도전 과제 발표 & 네트워킹</div>
+        <div class="track-title">도전 과제 최종 발표 & 네트워킹</div>
         <div class="track-subtitle">Week 4 &middot; 오프라인 모임 (1h / 파이널)</div>
       </div>
     </div>
     <div class="track-card">
       <div class="track-desc">
-        3주간의 실습과 도전 과제 결과물을 발표합니다.
+        4주간의 실습과 도전 과제 결과물을 발표합니다.
         나만의 AI 코딩 활용 사례를 공유하고, 향후 활용 계획을 이야기합니다.
       </div>
 
       <div class="task-group">
         <div class="task-label">&#x1F91D; 오프라인 모임 (1시간)</div>
         <ul class="task-list">
-          <li>3주차 당첨자폼 과제 리뷰</li>
-          <li>도전 과제 발표: 각자 완성한 도전 과제 시연 (인당 5~10분)</li>
+          <li><strong>도전 과제 최종 발표</strong>: 완성된 결과물 시연 + 배포 URL 공유 (인당 5~10분)</li>
           <li>4주간 가장 인상 깊었던 AI 코딩 경험 공유</li>
           <li>호스트 종합 피드백 및 수료</li>
         </ul>
@@ -677,28 +693,28 @@
         <div class="timeline-dot"></div>
         <div class="timeline-content">
           <div class="timeline-week">Week 1</div>
-          환경 세팅 + 실습 가이드 실행 &rarr; 과제: 실습 1 (캘린더) + 해보고 싶은 과제 제안
+          환경 세팅 + 실습 1·2 시작 &rarr; 과제: 실습 1 (캘린더) + 실습 2 (대시보드) 완료
         </div>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
         <div class="timeline-content">
           <div class="timeline-week">Week 2</div>
-          캘린더 과제 리뷰 &rarr; 과제: 실습 2 (대시보드) + 자기 과제 완성
+          실습 1·2 리뷰 + 실습 3 (당첨자폼) &rarr; 과제: 실습 3 완료 + 도전 과제 선정·착수
         </div>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
         <div class="timeline-content">
           <div class="timeline-week">Week 3</div>
-          대시보드 과제 리뷰 &rarr; 과제: 실습 3 (당첨자폼) + 도전 과제 선정 &amp; 완성
+          도전 과제 중간 리뷰 &rarr; 과제: 도전 과제 완성 + 배포 + 발표 준비
         </div>
       </div>
       <div class="timeline-item">
         <div class="timeline-dot"></div>
         <div class="timeline-content">
           <div class="timeline-week">Week 4</div>
-          도전 과제 발표 + 네트워킹 &rarr; 수료
+          도전 과제 최종 발표 + 네트워킹 &rarr; 수료
         </div>
       </div>
     </div>
@@ -710,15 +726,16 @@
     <ul class="note-list">
       <li>매주 실습 가이드를 따라 진행하고, 자기만의 과제를 선정하여 완성합니다</li>
       <li>과제 결과물과 질문은 <strong>그룹 채널</strong>에 수시로 공유합니다</li>
+      <li>개인적인 막힘이나 도전 과제 상담은 <strong>전담 코치와의 1:1 채널</strong>을 활용합니다</li>
       <li>오프라인 모임은 <strong>필수 참석</strong>이며, 불참 시 사전 연락 부탁드립니다</li>
-      <li>스터디 확정 시 그룹 채널로 상세 일정을 안내드립니다</li>
+      <li>스터디 확정 시 그룹 채널 + 전담 코치가 함께 안내됩니다</li>
       <li>노트북(Windows 또는 Mac) 지참 필수</li>
     </ul>
   </div>
 
   <!-- CTA -->
   <div class="cta-section">
-    <a href="https://influencer-p68.pages.dev/study" class="cta-btn">스터디 신청하기</a>
+    <a href="./study.html" class="cta-btn">스터디 신청하기</a>
     <div class="cta-sub">모집 마감 시 조기 종료될 수 있습니다</div>
   </div>
 
