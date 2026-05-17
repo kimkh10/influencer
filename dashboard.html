@@ -1011,6 +1011,33 @@
       margin-top: 12px; background: #2dd4bf; color: #0d1117;
       border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer;
     }
+    .pv-brand-panel {
+      background: #161b22; border: 1px solid #1f2530; border-radius: 8px;
+      padding: 18px 20px; margin-top: 20px;
+    }
+    .pv-brand-panel-title {
+      font-size: 14px; font-weight: 600; color: #c9d1d9;
+      margin: 0 0 14px 0;
+    }
+    .pv-brand-table {
+      width: 100%; border-collapse: collapse;
+    }
+    .pv-brand-table th, .pv-brand-table td {
+      padding: 8px 10px; text-align: left; font-size: 13px;
+      border-bottom: 1px solid #1f2530; color: #c9d1d9;
+    }
+    .pv-brand-table th {
+      color: #8b949e; font-weight: 600; font-size: 11px;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .pv-brand-table td:nth-child(2), .pv-brand-table td:nth-child(3),
+    .pv-brand-table th:nth-child(2), .pv-brand-table th:nth-child(3) {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .pv-brand-empty {
+      text-align: center; padding: 24px 0; color: #6e7681; font-size: 13px;
+    }
   </style>
 </head>
 <body>
@@ -1228,6 +1255,21 @@
         </div>
         <div class="legend" id="status-legend"></div>
       </div>
+    </div>
+
+    <!-- Brand summary panel -->
+    <div class="pv-brand-panel" id="pv-brand-panel" style="display:none">
+      <p class="pv-brand-panel-title">브랜드별 제품 구좌</p>
+      <table class="pv-brand-table">
+        <thead>
+          <tr>
+            <th>브랜드</th>
+            <th>전체</th>
+            <th>공구 가능</th>
+          </tr>
+        </thead>
+        <tbody id="pv-brand-tbody"></tbody>
+      </table>
     </div>
 
   </div>
@@ -1647,7 +1689,7 @@
   };
 
   // === Products Summary (for dashboard metric cards) ===
-  let productsSummary = null;  // { totalCount, availableCount }
+  let productsSummary = null;  // { totalCount, availableCount, byBrand }
 
   async function fetchProductsSummary() {
     try {
@@ -1664,7 +1706,16 @@
       if (!json || !Array.isArray(json.data)) return;
       const total = (json.meta && json.meta.totalCount) || 0;
       const available = json.data.filter(it => it.availableGroupPurchaseProduct === true).length;
-      productsSummary = { totalCount: total, availableCount: available };
+      const brandMap = new Map();
+      for (const it of json.data) {
+        const key = (it.brandName || '(미지정)').toString();
+        const cur = brandMap.get(key) || { brand: key, total: 0, available: 0 };
+        cur.total += 1;
+        if (it.availableGroupPurchaseProduct === true) cur.available += 1;
+        brandMap.set(key, cur);
+      }
+      const byBrand = Array.from(brandMap.values()).sort((a, b) => b.total - a.total);
+      productsSummary = { totalCount: total, availableCount: available, byBrand };
       renderProductsSummary();
       // sidebar brand 갱신 기회로 같이 활용
       if (json.data.length > 0) {
@@ -1681,6 +1732,24 @@
     const availEl = document.getElementById('stat-products-available');
     if (totalEl) totalEl.textContent = productsSummary.totalCount;
     if (availEl) availEl.textContent = productsSummary.availableCount;
+
+    const panel = document.getElementById('pv-brand-panel');
+    const tbody = document.getElementById('pv-brand-tbody');
+    if (!panel || !tbody) return;
+
+    const brands = Array.isArray(productsSummary.byBrand) ? productsSummary.byBrand : [];
+    if (brands.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3" class="pv-brand-empty">데이터가 없습니다.</td></tr>';
+    } else {
+      tbody.innerHTML = brands.map(b => `
+        <tr>
+          <td>${pvSafe(b.brand)}</td>
+          <td>${b.total}</td>
+          <td>${b.available}</td>
+        </tr>
+      `).join('');
+    }
+    panel.style.display = '';
   }
 
   // === Products View ===
