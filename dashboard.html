@@ -1636,6 +1636,7 @@
       const json = await res.json();
       if (reqId !== productsState._reqId) return;
       productsState.data = json;
+      if (json && json.data && json.data.length > 0) updateSidebarBrand(json.data[0].influencerName);
       productsState.loading = false;
       renderProductsView();
     } catch (e) {
@@ -1652,6 +1653,12 @@
   }
   function pvSafe(s) {
     return esc(s == null ? '' : String(s));   // 기존 esc() 재사용
+  }
+
+  function updateSidebarBrand(name) {
+    if (!name || typeof name !== 'string') return;
+    const el = document.querySelector('.sidebar-brand');
+    if (el && el.textContent !== name) el.textContent = name;
   }
 
   function renderProductsView() {
@@ -2082,6 +2089,7 @@
       }
 
       cachedPlans = allItems.map(normalizePlanItem);
+      if (cachedPlans.length > 0) updateSidebarBrand(cachedPlans[0].influencerName);
 
       renderAll();
       showToast(cachedPlans.length + '개 공구 데이터를 불러왔습니다.');
